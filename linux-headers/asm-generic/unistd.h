@@ -12,6 +12,7 @@
  * and implement the less feature-full calls in user space.
  */
 
+#define __ARCH_WANT_TIME32_SYSCALLS
 #ifndef __SYSCALL
 #define __SYSCALL(x, y)
 #endif
