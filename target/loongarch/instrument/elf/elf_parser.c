@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/mman.h>
 
 #include "symbol.h"
 #include "../util/error.h"
@@ -124,6 +125,13 @@ void parse_elf_symbol(const char* pathname, uint64_t map_base, void **pp_img)
     if (pread(fd, shdr, shsz, ehdr->e_shoff) != shsz) {
         fprintf(stderr, "read section headers failed\n");
         goto give_up;
+    }
+
+    char sec_n[64];
+    Elf64_Shdr *s = (void*)shdr+ehdr->e_shstrndx*sizeof(Elf64_Shdr);
+    for(int i = 0;i < shnum;i++){
+        pread(fd, sec_n, 64, s->sh_offset + shdr[i].sh_name);
+        fprintf(stderr,"sec name : %s\n", sec_n);
     }
 
     /* 4. lookup .symtab and .dynsym section */

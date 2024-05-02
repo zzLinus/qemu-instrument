@@ -50,12 +50,12 @@ mkall: mkqemu mkpin
 
 mkqemu:
 	@echo -e +$(GREEN)CC$(END) BUILD qemu
-	@$(SSH) -p $(PORT) $(SERV_USERNAME)@$(SERV_IP) make -C /opt/devel/qemu-instrument/build clean 
+	#@$(SSH) -p $(PORT) $(SERV_USERNAME)@$(SERV_IP) make -C /opt/devel/qemu-instrument/build clean
 	@$(SSH) -p $(PORT) $(SERV_USERNAME)@$(SERV_IP) make -C /opt/devel/qemu-instrument/build -j
 
 mkpin:
 	@echo -e +$(GREEN)CC$(END) BUILD pin-tools
-	@$(SSH) -p $(PORT) $(SERV_USERNAME)@$(SERV_IP) make -C /opt/devel/qemu-instrument/build/target/loongarch/pin/pintools/ clean 
+	#@$(SSH) -p $(PORT) $(SERV_USERNAME)@$(SERV_IP) make -C /opt/devel/qemu-instrument/build/target/loongarch/pin/pintools/ clean
 	@$(SSH) -p $(PORT) $(SERV_USERNAME)@$(SERV_IP) make -C /opt/devel/qemu-instrument/build/target/loongarch/pin/pintools/ -j 
 
 mvsrc:
