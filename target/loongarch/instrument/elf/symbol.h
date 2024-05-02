@@ -23,6 +23,7 @@ extern "C" {
     /* use this function get symbol info */
     symbol_info *get_symbol_by_pc(uint64_t pc);
     const char *get_symbol_name_by_pc(uint64_t pc);
+    const char *get_img_name(image *image);
 
     bool is_symbol_name_dupcalited(const char *name);
     void print_collected_symbols(void);

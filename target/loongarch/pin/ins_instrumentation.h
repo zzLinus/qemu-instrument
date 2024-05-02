@@ -16,6 +16,7 @@ typedef VOID (*SYSCALL_EXIT_CALLBACK) (THREADID threadIndex, CONTEXT *ctxt, SYSC
 typedef VOID (*CPU_EXEC_ENTER_CALLBACK) (CPUState *cpu, TranslationBlock *tb);
 typedef VOID (*CPU_EXEC_EXIT_CALLBACK) (CPUState *cpu, TranslationBlock *last_tb, int tb_exit);
 typedef VOID (*IMAGECALLBACK) (IMG img, VOID *v);
+typedef const char* STR;
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,6 +33,7 @@ void PIN_AddSyscallExitFunction(SYSCALL_EXIT_CALLBACK fun, VOID *val);
 void PIN_AddCpuExecEnterFunction(CPU_EXEC_ENTER_CALLBACK fun, VOID *val);
 void PIN_AddCpuExecExitFunction(CPU_EXEC_EXIT_CALLBACK fun, VOID *val);
 void IMG_AddInstrumentFunction(IMAGECALLBACK fun, VOID *val);
+STR IMG_Name(IMG img);
 
 VOID INS_InsertCall(INS INS, IPOINT action, AFUNPTR funptr, ...);
 VOID INS_InsertPredicatedCall (INS ins, IPOINT ipoint, AFUNPTR funptr,...);

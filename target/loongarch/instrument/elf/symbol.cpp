@@ -105,6 +105,14 @@ const char *get_symbol_name_by_pc(uint64_t pc)
     return name;
 }
 
+const char *get_img_name(image* img){
+    for (const image *_img : images) {
+		if (img ==_img)
+			return img->path.c_str();
+    }
+	return "can't find img name!\n";
+}
+
 void print_collected_symbols(void)
 {
     bool overlap = false;

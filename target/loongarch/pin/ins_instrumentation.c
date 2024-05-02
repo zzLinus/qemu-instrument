@@ -1362,3 +1362,9 @@ extern void qemu_dump_guest_reg(const char* filename);
 VOID PIN_DumpGuestReg (const char* filename) {
     qemu_dump_guest_reg(filename);
 }
+
+#include "../instrument/elf/symbol.h"
+STR IMG_Name(IMG img)
+{
+    return get_img_name((image *)img);
+}

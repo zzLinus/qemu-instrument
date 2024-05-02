@@ -19,3 +19,6 @@ GTAGS
 /.ccls-cache/
 /build-x86-64-softmmu/
 .vim-bookmarks
+.cache/
+compile_commands.json
+target/loong/log.txt
