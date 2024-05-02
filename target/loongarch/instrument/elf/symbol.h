@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
     typedef struct image image;
+    typedef void *IMG;
 
     typedef struct symbol_info {
         struct image *image;

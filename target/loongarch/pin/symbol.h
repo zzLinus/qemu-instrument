@@ -3,6 +3,14 @@
 
 #include "types.h"
 #include "instrumentation_arguements.h"
+#include "../instrument/elf/symbol.h"
+
+
+typedef struct pin_rtn {
+    const char *name;
+    uint64_t addr;
+    uint64_t size;
+} RTN;
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,6 +21,14 @@ extern "C" {
     BOOL RTN_Valid(RTN x);
     VOID RTN_Open(RTN rtn);
     VOID RTN_Close(RTN rtn);
+
+#ifdef __cplusplus
+    extern "C" {
+#endif
+    RTN RTN_alloc(const char *name, uint64_t addr, uint64_t size);
+#ifdef __cplusplus
+    }
+#endif
 
     /* === 下面为内部实现所需接口 === */
     VOID RTN_add_entry_cb(RTN rtn, ANALYSIS_CALL *cb);

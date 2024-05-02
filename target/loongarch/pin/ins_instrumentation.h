@@ -6,6 +6,8 @@
 #include "thread.h"
 #include "context.h"
 #include "reg.h"
+#include "../instrument/elf/symbol.h"
+#include "symbol.h"
 #include "qemu/typedefs.h" /* only for CPU_EXEC_ENTER(EXIT)_CALLBACK */
 
 typedef VOID (*INS_INSTRUMENT_CALLBACK) (INS ins, VOID* v);

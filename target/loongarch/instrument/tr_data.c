@@ -640,12 +640,3 @@ void TRACE_append_BBL(TRACE trace, BBL bbl)
     }
 }
 
-RTN RTN_alloc(const char *name, uint64_t addr, uint64_t size)
-{
-    return (RTN) {
-        .name = name,
-        .addr = addr,
-        .size = size
-    };
-}
-

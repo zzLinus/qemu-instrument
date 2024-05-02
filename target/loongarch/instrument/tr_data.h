@@ -125,22 +125,6 @@ TRACE TRACE_alloc(uint64_t pc);
 void BBL_append_INS(BBL bbl, INS INS);
 void TRACE_append_BBL(TRACE trace, BBL bbl);
 
-/* the real type of IMG is defined in elf/symbol.cpp named struct image */
-typedef void *IMG;
-
-typedef struct pin_rtn {
-    const char *name;
-    uint64_t addr;
-    uint64_t size;
-} RTN;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-RTN RTN_alloc(const char *name, uint64_t addr, uint64_t size);
-#ifdef __cplusplus
-}
-#endif
 
 #endif
 

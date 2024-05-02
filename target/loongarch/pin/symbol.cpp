@@ -40,6 +40,14 @@ VOID RTN_Close(RTN rtn)
 {
 }
 
+RTN RTN_alloc(const char *name, uint64_t addr, uint64_t size)
+{
+    return (RTN) {
+        .name = name,
+        .addr = addr,
+        .size = size
+    };
+}
 
 
 /* === 下面为内部实现所需接口 === */
