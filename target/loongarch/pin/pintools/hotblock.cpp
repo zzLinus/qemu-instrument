@@ -1,6 +1,5 @@
 #include "pintool.h"
 #include "../ins_inspection.h"
-#include "../symbol.h"
 
 #include <unordered_map>
 #include <vector>

@@ -2,9 +2,10 @@ SSH="ssh"
 PORT = "2225"
 SERV_USERNAME="root"
 SERV_IP="www.yongxiang.work"
-#SOT="/opt/devel/qemu-instrument/build/target/loongarch/pin/pintools/pintest"
-#SOT="/opt/devel/qemu-instrument/build/coremark/coremark.exe"
-SOT="/usr/bin/ls"
+#SOT="/opt/devel/pintest"
+SOT="/opt/devel/pintest-c"
+#SOT="/opt/devel/coremark/coremark.exe"
+#SOT="/usr/bin/ls"
 RES_FILE=".res"
 SHELL=bash
 

@@ -1,5 +1,4 @@
 #include "pintool.h"
-#include "../symbol.h"
 #include "../../instrument/elf/symbol.h"
 
 #define MALLOC "malloc"

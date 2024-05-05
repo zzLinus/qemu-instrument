@@ -127,12 +127,6 @@ void parse_elf_symbol(const char* pathname, uint64_t map_base, void **pp_img)
         goto give_up;
     }
 
-    char sec_n[64];
-    Elf64_Shdr *s = (void*)shdr+ehdr->e_shstrndx*sizeof(Elf64_Shdr);
-    for(int i = 0;i < shnum;i++){
-        pread(fd, sec_n, 64, s->sh_offset + shdr[i].sh_name);
-        fprintf(stderr,"sec name : %s\n", sec_n);
-    }
 
     /* 4. lookup .symtab and .dynsym section */
     /* only need one of both, because dynsym is included in symtab */
@@ -174,9 +168,23 @@ void parse_elf_symbol(const char* pathname, uint64_t map_base, void **pp_img)
             || ELF64_ST_TYPE(syms[i].st_info) != STT_FUNC) {
             continue;
         }
-        /* printf("find symbol: %p: %s\n", (void *)(map_base + syms[i].st_value), strs + syms[i].st_name); */
+        fprintf(stderr,"find symbol: %p: %s\n", (void *)(map_base + syms[i].st_value), strs + syms[i].st_name);
         image_add_symbol((image *)*pp_img, strs + syms[i].st_name, map_base + syms[i].st_value, syms[i].st_size);
     }
+
+    char sec_n[64];
+    Elf64_Shdr *s = (void*)shdr+ehdr->e_shstrndx*sizeof(Elf64_Shdr);
+    for(int i = 0;i < shnum;i++){
+        if(shdr[i].sh_type == SHT_PROGBITS && ((shdr[i].sh_flags & SHF_EXECINSTR) != 0)){
+            pread(fd, sec_n, 64, s->sh_offset + shdr[i].sh_name);
+            fprintf(stderr,"sec name : %s            (%p) %d\n", sec_n,map_base+shdr[i].sh_addr,shdr[i].sh_size);
+            is_sym_in_sec((image*)*pp_img,map_base + shdr[i].sh_addr,shdr[i].sh_size);
+        }else{
+            pread(fd, sec_n, 64, s->sh_offset + shdr[i].sh_name);
+            fprintf(stderr,"sec name : %s\n", sec_n);
+        }
+    }
+
 give_up:
     free(strs);
     free(syms);

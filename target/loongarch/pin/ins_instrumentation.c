@@ -1183,7 +1183,7 @@ static void _RTN_InsertCall(INS INS, ANALYSIS_CALL *cb)
 }
 
 
-#include "symbol.h"
+#include "../instrument/elf/symbol.h"
 /* 只是记录插桩信息，直到翻译时，遇到函数入口时再插桩 */
 VOID RTN_InsertCall(RTN rtn, IPOINT ipoint, AFUNPTR funptr, ...)
 {
@@ -1363,7 +1363,6 @@ VOID PIN_DumpGuestReg (const char* filename) {
     qemu_dump_guest_reg(filename);
 }
 
-#include "../instrument/elf/symbol.h"
 STR IMG_Name(IMG img)
 {
     return get_img_name((image *)img);

@@ -21,4 +21,4 @@ GTAGS
 .vim-bookmarks
 .cache/
 compile_commands.json
-target/loong/log.txt
+target/loongarch/log.txt

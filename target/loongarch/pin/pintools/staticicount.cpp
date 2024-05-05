@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <iostream>
 #include "pintool.h"
-#include "../symbol.h"
 #include "../../instrument/elf/symbol.h"
 
 // Pin calls this function every time a new img is loaded
