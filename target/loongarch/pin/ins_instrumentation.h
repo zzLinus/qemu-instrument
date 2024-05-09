@@ -44,7 +44,7 @@ VOID BBL_InsertCall(BBL bbl, IPOINT action, AFUNPTR funptr, ...);
 VOID BBL_InsertIfCall (BBL bbl, IPOINT action, AFUNPTR funptr,...);
 VOID BBL_InsertThenCall (BBL bbl, IPOINT action, AFUNPTR funptr,...);
 VOID TRACE_InsertCall(TRACE trace, IPOINT action, AFUNPTR funptr, ...);
-VOID RTN_InsertCall(RTN rtn, IPOINT action, AFUNPTR funptr, ...);
+VOID RTN_InsertCall(RTN *rtn, IPOINT action, AFUNPTR funptr, ...);
 VOID RTN_instrument(TRACE trace);
 
 /* add imm to value in ptr */

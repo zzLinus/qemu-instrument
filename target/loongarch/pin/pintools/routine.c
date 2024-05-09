@@ -16,7 +16,7 @@ static VOID MallocAfter(ADDRINT ret) {
 static VOID Image(IMG img, VOID* v)
 {
     /* Malloc */
-    RTN mallocRtn = RTN_FindByName(img, MALLOC);
+    RTN * mallocRtn = RTN_FindByName(img, MALLOC);
     if (RTN_Valid(mallocRtn))
     {
         RTN_Open(mallocRtn);
@@ -26,7 +26,7 @@ static VOID Image(IMG img, VOID* v)
     }
  
     /* Free */
-    RTN freeRtn = RTN_FindByName(img, FREE);
+    RTN* freeRtn = RTN_FindByName(img, FREE);
     if (RTN_Valid(freeRtn))
     {
         RTN_Open(freeRtn);
@@ -35,7 +35,7 @@ static VOID Image(IMG img, VOID* v)
     }
 
     /* Foo */
-    RTN fooRtn = RTN_FindByName(img, FOO);
+    RTN* fooRtn = RTN_FindByName(img, FOO);
     if (RTN_Valid(fooRtn))
     {
         RTN_Open(fooRtn);

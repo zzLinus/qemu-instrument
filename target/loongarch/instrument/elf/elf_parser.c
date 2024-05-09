@@ -147,43 +147,54 @@ void parse_elf_symbol(const char* pathname, uint64_t map_base, void **pp_img)
 
     /* 4.2 read symbol table */
     secsz = shdr[sym_idx].sh_size;
+    if (secsz / sizeof(Elf64_Sym) > INT_MAX) {
+        fprintf(stderr, "Implausibly large symbol table, give up\n");
+        goto give_up;
+    }
+    nsyms = secsz / sizeof(Elf64_Sym);
     syms = (Elf64_Sym *)malloc(secsz);
     if (!syms || pread(fd, syms, secsz, shdr[sym_idx].sh_offset) != secsz) {
         fprintf(stderr, "read .symtab section failed\n");
         goto give_up;
     }
 
-    if (secsz / sizeof(Elf64_Sym) > INT_MAX) {
-        fprintf(stderr, "Implausibly large symbol table, give up\n");
-        goto give_up;
-    }
 
-    /* 4.3 scan symbol table, collect functions */
+    // alloc IMG
     *pp_img = image_alloc(pathname, map_base);
-    nsyms = secsz / sizeof(Elf64_Sym);
-    for (int i = 0; i < nsyms; ++i) {
-        /* Throw away entries which we do not need.  */
-        if (syms[i].st_shndx == SHN_UNDEF
-            || syms[i].st_shndx >= SHN_LORESERVE
-            || ELF64_ST_TYPE(syms[i].st_info) != STT_FUNC) {
-            continue;
-        }
-        fprintf(stderr,"find symbol: %p: %s\n", (void *)(map_base + syms[i].st_value), strs + syms[i].st_name);
-        image_add_symbol((image *)*pp_img, strs + syms[i].st_name, map_base + syms[i].st_value, syms[i].st_size);
-    }
 
+    // alloc SEC
     char sec_n[64];
-    Elf64_Shdr *s = (void*)shdr+ehdr->e_shstrndx*sizeof(Elf64_Shdr);
+    Elf64_Shdr *s = (void*)shdr + ehdr->e_shstrndx * sizeof(Elf64_Shdr); // get string table section pointer
     for(int i = 0;i < shnum;i++){
+        pread(fd, sec_n, 64, s->sh_offset + shdr[i].sh_name);
+
         if(shdr[i].sh_type == SHT_PROGBITS && ((shdr[i].sh_flags & SHF_EXECINSTR) != 0)){
-            pread(fd, sec_n, 64, s->sh_offset + shdr[i].sh_name);
-            fprintf(stderr,"sec name : %s            (%p) %d\n", sec_n,map_base+shdr[i].sh_addr,shdr[i].sh_size);
-            is_sym_in_sec((image*)*pp_img,map_base + shdr[i].sh_addr,shdr[i].sh_size);
+            SEC * sec = sec_alloc(*pp_img, sec_n, shdr[i].sh_addr, shdr[i].sh_size);
+            uint64_t sec_start = map_base + shdr[i].sh_addr;
+            uint64_t sec_end = sec_start + shdr[i].sh_size;
+            fprintf(stderr,"sec name : %s            (%p) %d\n", sec_n, sec_start, shdr[i].sh_size);
+
+            // alloc RTN and collect RTN if section has is
+            for (int i = 0; i < nsyms; ++i) {
+                /* Throw away entries which we do not need.  */
+                if (syms[i].st_shndx == SHN_UNDEF
+                    /**|| syms[i].st_shndx >= SHN_LORESERVE*/
+                    || ELF64_ST_TYPE(syms[i].st_info) != STT_FUNC) {
+                    continue;
+                }
+
+                if(map_base + syms[i].st_value < sec_end 
+                        && map_base + syms[i].st_value >= sec_start) {
+                    fprintf(stderr,"rtn name : %s    (%p) %d\n",  strs + syms[i].st_name,  map_base + syms[i].st_value, syms[i].st_size);
+                    rtn_alloc(sec, strs + syms[i].st_name, map_base + syms[i].st_value, syms[i].st_size);
+                }
+            }
         }else{
-            pread(fd, sec_n, 64, s->sh_offset + shdr[i].sh_name);
+            sec_alloc(*pp_img, sec_n, shdr[i].sh_addr, shdr[i].sh_size);
             fprintf(stderr,"sec name : %s\n", sec_n);
         }
     }
+
 
 give_up:
     free(strs);

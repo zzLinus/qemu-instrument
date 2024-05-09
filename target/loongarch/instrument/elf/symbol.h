@@ -9,62 +9,43 @@
 extern "C" {
 #endif
 
+    typedef struct pin_rtn RTN;
+
+    typedef struct sec SEC;
+
+    // FIXME: why use void* instead of using IMG directly
     typedef struct image image;
-    typedef void *IMG;
+    typedef void* IMG;
 
-    typedef struct symbol_info {
-        struct image *image;
-        const char *name;
-        uint64_t addr;
-        uint64_t size;
-    } symbol_info;
 
-    image *image_alloc(const char *path, uintptr_t load_base);
-    void image_add_symbol(image *image, const char * name, uint64_t addr, uint64_t size);
 
-    symbol_info *image_get_symbol_by_name(image *image, const char *name);
+    image* image_alloc(const char* path, uintptr_t load_base);
+
+    SEC* sec_alloc(IMG img, const char* name, uint64_t addr,uint64_t size);
+    RTN* sec_get_symbol_by_name(SEC *sec, const char* name);
+
     /* use this function get symbol info */
-    symbol_info *get_symbol_by_pc(uint64_t pc);
-    const char *get_symbol_name_by_pc(uint64_t pc);
-    void is_sym_in_sec(image* img, uint64_t start, uint64_t size);
-    const char *get_img_name(image *image);
+    RTN* get_symbol_by_pc(uint64_t pc);
+    const char* get_symbol_name_by_pc(uint64_t pc);
+    const char* get_img_name(image* image);
 
-    bool is_symbol_name_dupcalited(const char *name);
+    bool is_symbol_name_dupcalited(const char* name);
     void print_collected_symbols(void);
 
-#ifdef __cplusplus
-}
-#endif
-
-typedef struct pin_rtn {
-    const char *name;
-    uint64_t addr;
-    uint64_t size;
-} RTN;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
     /* In Pin, RTN_FindNameByAddress return std::string */
-    const CHAR *RTN_FindNameByAddress(ADDRINT address);
-    RTN RTN_FindByName(IMG img, const CHAR *name);
-    BOOL RTN_Valid(RTN x);
-    VOID RTN_Open(RTN rtn);
-    VOID RTN_Close(RTN rtn);
+    const CHAR* RTN_FindNameByAddress(ADDRINT address);
+    BOOL RTN_Valid(RTN *x);
+    VOID RTN_Open(RTN *rtn);
+    VOID RTN_Close(RTN *rtn);
+    RTN* rtn_alloc(SEC* sec, const char* name, uint64_t addr, uint64_t size);
+    RTN* RTN_FindByName(IMG img, const CHAR* name);
 
-#ifdef __cplusplus
-    extern "C" {
-#endif
-    RTN RTN_alloc(const char *name, uint64_t addr, uint64_t size);
-#ifdef __cplusplus
-    }
-#endif
 
     /* === 下面为内部实现所需接口 === */
-    VOID RTN_add_entry_cb(RTN rtn, ANALYSIS_CALL *cb);
-    ANALYSIS_CALL *RTN_get_entry_cbs(uintptr_t pc, int *cnt);
-    VOID RTN_add_exit_cb(RTN rtn, ANALYSIS_CALL *cb);
-    ANALYSIS_CALL *RTN_get_exit_cbs(uintptr_t pc, int *cnt);
+    VOID RTN_add_entry_cb(RTN* rtn, ANALYSIS_CALL* cb);
+    ANALYSIS_CALL* RTN_get_entry_cbs(uintptr_t pc, int *cnt);
+    VOID RTN_add_exit_cb(RTN* rtn, ANALYSIS_CALL* cb);
+    ANALYSIS_CALL* RTN_get_exit_cbs(uintptr_t pc, int *cnt);
 #ifdef __cplusplus
 }
 #endif
