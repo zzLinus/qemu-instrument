@@ -17,7 +17,16 @@ extern "C" {
     typedef struct image image;
     typedef void* IMG;
 
-
+    // NOTE: new api
+    SEC* IMG_SecHead(IMG img);
+    SEC* SEC_Next(SEC* sec);
+    bool SEC_Valid(SEC* sec);
+    const char* SEC_Name(SEC* sec);
+    RTN* SEC_RtnHead(SEC* sec);
+    RTN* RTN_Next(RTN* rtn);
+    bool RTN_Valid(RTN* rtn);
+    const char* RTN_Name(RTN* rtn);
+    INS RTN_InsHead(RTN* rtn);
 
     image* image_alloc(const char* path, uintptr_t load_base);
 
@@ -34,7 +43,6 @@ extern "C" {
 
     /* In Pin, RTN_FindNameByAddress return std::string */
     const CHAR* RTN_FindNameByAddress(ADDRINT address);
-    BOOL RTN_Valid(RTN *x);
     VOID RTN_Open(RTN *rtn);
     VOID RTN_Close(RTN *rtn);
     RTN* rtn_alloc(SEC* sec, const char* name, uint64_t addr, uint64_t size);

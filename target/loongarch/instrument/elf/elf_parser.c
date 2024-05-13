@@ -99,7 +99,7 @@ void parse_elf_symbol(const char* pathname, uint64_t map_base, void **pp_img)
 
     int fd = open(pathname, O_RDONLY, 0);
     if (fd < 0) {
-        /* printf("Error while loading %s: %s\n", filename, strerror(errno)); */
+        fprintf(stderr, "Error while loading %s\n", pathname);
         perror("open file failed\n");
         return;
     }
@@ -172,7 +172,7 @@ void parse_elf_symbol(const char* pathname, uint64_t map_base, void **pp_img)
             SEC * sec = sec_alloc(*pp_img, sec_n, shdr[i].sh_addr, shdr[i].sh_size);
             uint64_t sec_start = map_base + shdr[i].sh_addr;
             uint64_t sec_end = sec_start + shdr[i].sh_size;
-            fprintf(stderr,"sec name : %s            (%p) %d\n", sec_n, sec_start, shdr[i].sh_size);
+            /**fprintf(stderr,"sec name : %s            (%p) %d\n", sec_n, sec_start, shdr[i].sh_size);*/
 
             // alloc RTN and collect RTN if section has is
             for (int i = 0; i < nsyms; ++i) {
@@ -185,13 +185,11 @@ void parse_elf_symbol(const char* pathname, uint64_t map_base, void **pp_img)
 
                 if(map_base + syms[i].st_value < sec_end 
                         && map_base + syms[i].st_value >= sec_start) {
-                    fprintf(stderr,"rtn name : %s    (%p) %d\n",  strs + syms[i].st_name,  map_base + syms[i].st_value, syms[i].st_size);
+                    /**fprintf(stderr,"rtn name : %s    (%p) %d\n",  strs + syms[i].st_name,  map_base + syms[i].st_value, syms[i].st_size);*/
                     rtn_alloc(sec, strs + syms[i].st_name, map_base + syms[i].st_value, syms[i].st_size);
                 }
             }
         }else{
-            sec_alloc(*pp_img, sec_n, shdr[i].sh_addr, shdr[i].sh_size);
-            fprintf(stderr,"sec name : %s\n", sec_n);
         }
     }
 

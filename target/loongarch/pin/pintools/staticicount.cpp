@@ -11,6 +11,7 @@
 #include <iostream>
 #include "pintool.h"
 #include "../../instrument/elf/symbol.h"
+#include "../ins_inspection.h"
 
 // Pin calls this function every time a new img is loaded
 // It can instrument the image, but this example merely
@@ -20,23 +21,25 @@ VOID ImageLoad(IMG img, VOID* v)
 {
 	UINT32 count = 0;
 
-	//for (SEC sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec))
-	//{
-	//    for (RTN rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn))
-	//    {
-	//        // Prepare for processing of RTN, an  RTN is not broken up into BBLs,
-	//        // it is merely a sequence of INSs
-	//        RTN_Open(rtn);
+	for (SEC* sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec))
+	{
+		//fprintf(stderr, "sec %s\n", SEC_Name(sec));
+		for (RTN* rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn))
+		{
+			//fprintf(stderr, "rtn %s\n", RTN_Name(rtn));
+			// Prepare for processing of RTN, an  RTN is not broken up into BBLs,
+			// it is merely a sequence of INSs
+			RTN_Open(rtn);
 
-	//        for (INS ins = RTN_InsHead(rtn); INS_Valid(ins); ins = INS_Next(ins))
-	//        {
-	//            count++;
-	//        }
+			for (INS ins = RTN_InsHead(rtn); INS_Valid(ins); ins = INS_Next(ins))
+			{
+				count++;
+			}
 
-	//        // to preserve space, release data associated with RTN after we have processed it
-	//        RTN_Close(rtn);
-	//    }
-	//}
+			//// to preserve space, release data associated with RTN after we have processed it
+			RTN_Close(rtn);
+		}
+	}
 	fprintf(stderr, "Image %s has  %d instructions\n", IMG_Name(img), count);
 }
 

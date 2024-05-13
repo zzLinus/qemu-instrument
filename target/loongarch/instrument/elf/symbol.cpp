@@ -5,18 +5,45 @@
 #include <unordered_map>
 #include <map>
 #include <limits>
+#include "instrument/decoder/disasm.h"
 #include "string.h"
 #include "../util/error.h"
+#include <fcntl.h>
 
-struct image {
-    std::string path;
-    uintptr_t load_base;
-    std::vector<SEC*> sections;   /* sections are ordered by addr and size */
-    std::unordered_map<std::string, SEC*> section_name_map;
 
-    image(const char *path, uintptr_t load_base) : path(path), load_base(load_base)
+struct compare_instruction_info {
+    bool operator()(const INS lhs, const INS rhs) const
     {
-    }
+        if (lhs->pc != rhs->pc) {
+            return lhs->pc < rhs->pc;
+        } else {
+            return lhs->pc < rhs->pc;
+        }
+    };
+};
+
+// NOTE: RNT section (aka symbol)
+struct pin_rtn {
+	SEC *sec;
+	std::string name;
+	std::set<INS, compare_instruction_info> instructions;   /* symbols are ordered by addr and size */
+	uint64_t addr;
+	uint64_t size;
+
+	pin_rtn(const char* name,uint64_t addr, uint64_t size) : name(name),addr(addr), size(size)
+	{
+	}
+};
+
+struct compare_symbol_info {
+    bool operator()(const RTN *lhs, const RTN *rhs) const
+    {
+        if (lhs->addr != rhs->addr) {
+            return lhs->addr < rhs->addr;
+        } else {
+            return lhs->size < rhs->size;
+        }
+    };
 };
 
 // NOTE: SEC section
@@ -26,7 +53,7 @@ struct sec {
 	std::string name;
 	uint64_t addr;
 	uint64_t size;
-    std::vector<RTN*> symbols;   /* symbols are ordered by addr and size */
+	std::set<RTN*, compare_symbol_info> symbols;   /* symbols are ordered by addr and size */
     std::unordered_map<std::string, RTN *> symbol_name_map;
 
 	sec(const char* name,uint64_t addr, uint64_t size) : name(name), addr(addr), size(size)
@@ -45,27 +72,16 @@ bool operator()(const sec *lhs, const sec *rhs) const
     };
 };
 
-// NOTE: RNT section (aka symbol)
-struct pin_rtn {
-	SEC *sec;
-	std::string name;
-	uint64_t addr;
-	uint64_t size;
+// NOTE: IMG section
+struct image {
+    std::string path;
+    uintptr_t load_base;
+	std::set<SEC *,compare_section_info> sections; /* sections are ordered by addr and size */
+    std::unordered_map<std::string, SEC*> section_name_map;
 
-	pin_rtn(const char* name,uint64_t addr, uint64_t size) : name(name),addr(addr), size(size)
-	{
-	}
-};
-
-struct compare_symbol_info {
-    bool operator()(const RTN *lhs, const RTN *rhs) const
+    image(const char *path, uintptr_t load_base) : path(path), load_base(load_base)
     {
-        if (lhs->addr != rhs->addr) {
-            return lhs->addr < rhs->addr;
-        } else {
-            return lhs->size < rhs->size;
-        }
-    };
+    }
 };
 
 
@@ -90,8 +106,9 @@ SEC *sec_alloc(IMG img, const char* name, uint64_t addr, uint64_t size){
 	sec * sec = new SEC(name, addr, size);
 	sec->image = (image*)img;
 	all_sections.insert(sec);
-	((image*)img)->sections.push_back(sec);
+	((image*)img)->sections.insert(sec);
 	((image*)img)->section_name_map.insert({sec->name,sec});
+
 	return sec;
 }
 
@@ -99,8 +116,9 @@ RTN *rtn_alloc(SEC* sec, const char* name, uint64_t addr, uint64_t size){
     RTN *symbol = new RTN(name, addr, size);
 	symbol->sec = sec;
     all_symbols.insert(symbol);
-	sec->symbols.push_back(symbol);
+	sec->symbols.insert(symbol);
 	sec->symbol_name_map.insert({symbol->name, symbol});
+
 	return symbol;
 }
 
@@ -219,20 +237,6 @@ RTN *RTN_FindByName(IMG img, const CHAR *name)
 	return NULL;
 }
 
-BOOL RTN_Valid(RTN* x)
-{
-    return (!x->name.empty() && x->addr != 0 && x->size != 0);
-}
-
-/* do nothing ... */
-VOID RTN_Open(RTN* rtn)
-{
-}
-
-VOID RTN_Close(RTN* rtn)
-{
-}
-
 /* === 下面为内部实现所需接口 === */
 
 static auto compare_rtn = [](const RTN &lhs, const RTN &rhs)
@@ -292,4 +296,99 @@ ANALYSIS_CALL *RTN_get_exit_cbs(uintptr_t pc, int *cnt)
 
     *cnt = 0;
     return NULL;
+}
+
+SEC* IMG_SecHead(IMG img)
+{
+	return *((image*)img)->sections.begin();
+}
+
+SEC* SEC_Next(SEC* sec)
+{
+	image * img = sec->image;
+	if(img->sections.upper_bound(sec) != img->sections.end()){
+		return *img->sections.upper_bound(sec);
+	}
+
+	return NULL;
+}
+
+bool SEC_Valid(SEC* sec)
+{
+	return (sec != NULL);
+}
+
+const char* SEC_Name(SEC* sec)
+{
+	return sec->name.c_str();
+}
+
+RTN* SEC_RtnHead(SEC* sec)
+{
+	return *sec->symbols.begin();
+}
+
+RTN* RTN_Next(RTN* rtn)
+{
+	SEC * sec= rtn->sec;
+	if(sec->symbols.upper_bound(rtn) != sec->symbols.end()){
+		return *sec->symbols.upper_bound(rtn);
+	}
+
+	return NULL;
+}
+
+bool RTN_Valid(RTN* rtn)
+{
+	return (rtn != NULL);
+}
+
+const char* RTN_Name(RTN* rtn)
+{
+	fprintf(stderr,"addr %p size %d\n", rtn->addr, rtn->size);
+	return rtn->name.c_str();
+}
+
+/* do nothing ... */
+VOID RTN_Open(RTN* rtn)
+{
+    int fd = open(rtn->sec->image->path.c_str(), O_RDONLY, 0);
+	INS prev_ins = NULL;
+	for(uint64_t i = 0; i < rtn->size; i += 4) {
+		uint32_t opcode;
+		uint64_t ins_addr = rtn->addr + i - rtn->sec->image->load_base;
+		pread(fd, &opcode, sizeof(opcode), ins_addr);
+		//fprintf(stderr,"ins addr %p opcode %x\n",ins_addr,opcode);
+		Ins * origin_ins = new Ins;
+		//la_disasm(opcode, origla_disasmin_ins);
+		INS INS = new pin_ins;
+		INS->next = NULL;
+		INS->prev = NULL;
+		INS->pc = ins_addr;
+		INS->opcode = opcode;
+		INS->origin_ins = origin_ins;
+		INS->first_ins = NULL;
+		INS->last_ins = NULL;
+		INS->len = 0;
+		INS->ibefore_next_cb = NULL;
+		INS->iafter_next_cb = NULL;
+		if(i == 0) {
+			INS->prev = NULL;
+		} else {
+			prev_ins->next = INS;
+			INS->prev = prev_ins;
+		}
+		prev_ins = INS;
+		rtn->instructions.insert(INS);
+	}
+}
+
+VOID RTN_Close(RTN* rtn)
+{
+	rtn->instructions.clear();
+}
+
+INS RTN_InsHead(RTN* rtn)
+{
+	return *rtn->instructions.begin();
 }
