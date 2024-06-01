@@ -31,6 +31,7 @@ NAMES += champsim
 NAMES += champsim_full
 NAMES += champsim_slice
 NAMES += champsim_multi
+NAMES += buffer_linux
 
 SONAMES := $(addsuffix .so,$(addprefix lib,$(NAMES)))
 

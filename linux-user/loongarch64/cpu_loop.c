@@ -21,6 +21,8 @@ void cpu_loop(CPULoongArchState *env)
     int trapnr, si_code;
     abi_long ret;
 
+    THREAD_start_instrument(0,NULL,0,NULL);
+
     for (;;) {
         cpu_exec_start(cs);
         trapnr = cpu_exec(cs);
@@ -33,6 +35,11 @@ void cpu_loop(CPULoongArchState *env)
             break;
         case EXCCODE_SYS:
             env->pc += 4;
+
+            if(env->gpr[11] == 94){
+                THREAD_finish_instrument(0,NULL,0,NULL);
+            }
+
             ret = do_syscall(env, env->gpr[11],
                              env->gpr[4], env->gpr[5],
                              env->gpr[6], env->gpr[7],

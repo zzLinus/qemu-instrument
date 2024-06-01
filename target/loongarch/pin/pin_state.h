@@ -22,9 +22,18 @@ struct PIN_STATE {
     CPU_EXEC_EXIT_CALLBACK cpu_exec_exit_cb;
     VOID* cpu_exec_exit_cb_val;
 
+    TRACE_BUFFER_CALLBACK buffer_full_cb;
+    VOID* buffer_full_val;
+
     BOOL read_symbol;
     IMAGECALLBACK img_cb;
     VOID* img_cb_val;
+
+    THREAD_START_CALLBACK thread_start_cb;
+    VOID* thread_start_val;
+
+    THREAD_FINI_CALLBACK thread_finish_cb;
+    VOID* thread_finish_val;
 };
 
 struct PIN_INSTRU_CONTEXT {
@@ -34,14 +43,26 @@ struct PIN_INSTRU_CONTEXT {
     bool bbl_if_call_valid;
 };
 
+struct PIN_BUFFER_TLS{
+    uint64_t buffer_id;
+    // FIXME: only support 256 buffers in total
+    uint64_t buffer_size[256];
+};
+
+
 /* FIXME 线程安全吗？ */
 extern struct PIN_STATE PIN_state;
 extern struct PIN_INSTRU_CONTEXT PIN_instru_ctx;
+extern struct PIN_BUFFER_TLS PIN_buffer_info;
 
 /* === 以下接口只在 QEMU 内部调用 === */
 void INS_instrument(INS ins);
 void TRACE_instrument(TRACE trace);
 void IMG_instrument(IMG img);
+// NOTE: new added
+// TODO:
+void THREAD_start_instrument(THREADID tid, CONTEXT* ctxt, INT32 flags, VOID* v);
+void THREAD_finish_instrument(THREADID tid, const CONTEXT* ctxt, INT32 code, VOID* v);
 
 /* load pintool */
 void qemu_pintool_opt_parse(const char *optarg, Error **errp);

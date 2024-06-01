@@ -3,9 +3,9 @@ PORT = "2225"
 SERV_USERNAME="root"
 SERV_IP="www.yongxiang.work"
 #SOT="/opt/devel/pintest"
-#SOT="/opt/devel/pintest-c"
+SOT="/opt/devel/pintest-c"
 #SOT="/opt/devel/coremark/coremark.exe"
-SOT="/usr/bin/ls"
+#SOT="/usr/bin/ls"
 RES_FILE=".res"
 SHELL=bash
 
@@ -27,7 +27,7 @@ NAMES :=
 #NAMES += inline_add
 #NAMES += strace              # (x)
 #NAMES += routine             # (x)
-NAMES += staticicount
+#NAMES += staticicount
 #NAMES += bcc
 #NAMES += reg_frequency
 #NAMES += time_in_code_cache
@@ -37,6 +37,7 @@ NAMES += staticicount
 #NAMES += champsim_full
 #NAMES += champsim_slice
 #NAMES += champsim_multi
+NAMES += buffer_linux
 
 SONAMES := $(addsuffix .so,$(addprefix lib,$(NAMES)))
 
@@ -51,7 +52,7 @@ mkall: mkqemu mkpin
 
 mkqemu:
 	@echo -e +$(GREEN)CC$(END) BUILD qemu
-	#@$(SSH) -p $(PORT) $(SERV_USERNAME)@$(SERV_IP) make -C /opt/devel/qemu-instrument/build clean
+	 #@$(SSH) -p $(PORT) $(SERV_USERNAME)@$(SERV_IP) make -C /opt/devel/qemu-instrument/build clean
 	@$(SSH) -p $(PORT) $(SERV_USERNAME)@$(SERV_IP) make -C /opt/devel/qemu-instrument/build -j
 
 mkpin:

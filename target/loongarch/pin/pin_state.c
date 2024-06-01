@@ -18,10 +18,22 @@ struct PIN_STATE PIN_state = {
     .cpu_exec_exit_cb_val = NULL,
     .img_cb = NULL,
     .img_cb_val = NULL,
+    .buffer_full_cb = NULL,
+    .buffer_full_val = NULL,
+    .thread_start_cb = NULL,
+    .thread_start_val = NULL,
+    .thread_finish_cb = NULL,
+    .thread_finish_val = NULL,
 };
 
 struct PIN_INSTRU_CONTEXT PIN_instru_ctx = {
     .ins_if_call_valid = false,
+};
+
+struct PIN_BUFFER_TLS PIN_buffer_info = 
+{
+    .buffer_id = 0,
+    .buffer_size = {0},
 };
 
 void INS_instrument(INS ins)
@@ -136,3 +148,17 @@ void IMG_instrument(IMG img)
     }
 }
 
+
+void THREAD_start_instrument(THREADID tid, CONTEXT* ctxt, INT32 flags, VOID* v)
+{
+    if(PIN_state.thread_start_cb){
+        PIN_state.thread_start_cb(tid,ctxt,flags,v);
+    }
+}
+
+void THREAD_finish_instrument(THREADID tid, const CONTEXT* ctxt, INT32 code, VOID* v)
+{
+    if(PIN_state.thread_finish_cb){
+        PIN_state.thread_finish_cb(tid,ctxt,code,v);
+    }
+}

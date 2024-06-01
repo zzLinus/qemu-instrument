@@ -52,11 +52,11 @@ void put_trace(trace_instr_format_t* trace) {
     }
     trace_buffer[trace_buffer_index] = *trace;
     ++ trace_buffer_index;
-    /*
-    fprintf(stderr, "pc:%llx dm:%llx, sm:%llx w:%d s0:%d s1:%d s2:%d ret_val:%llx br:%d taken:%d\n", \
-        trace->ip, trace->destination_memory[0], trace->source_memory[0], trace->destination_registers[0], \
-        trace->source_registers[0], trace->source_registers[1], trace->source_registers[2], trace->ret_val, trace->is_branch, trace->branch_taken);
-    */
+
+	fprintf(stderr, "pc:%llx dm:%llx, sm:%llx w:%d s0:%d s1:%d s2:%d ret_val:%llx br:%d taken:%d\n", \
+		trace->ip, trace->destination_memory[0], trace->source_memory[0], trace->destination_registers[0], \
+		trace->source_registers[0], trace->source_registers[1], trace->source_registers[2], trace->ret_val, trace->is_branch, trace->branch_taken);
+
 }
 
 #define reg_rw_w(rw) (unsigned char)(rw & 0xff)

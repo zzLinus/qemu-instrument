@@ -9,6 +9,7 @@
 #include "../instrument/elf/symbol.h"
 #include "qemu/typedefs.h" /* only for CPU_EXEC_ENTER(EXIT)_CALLBACK */
 
+
 typedef VOID (*INS_INSTRUMENT_CALLBACK) (INS ins, VOID* v);
 typedef VOID (*TRACE_INSTRUMENT_CALLBACK) (TRACE trace, VOID *v);
 typedef VOID (*FINI_CALLBACK) (INT32 code, VOID *v);
@@ -18,6 +19,10 @@ typedef VOID (*CPU_EXEC_ENTER_CALLBACK) (CPUState *cpu, TranslationBlock *tb);
 typedef VOID (*CPU_EXEC_EXIT_CALLBACK) (CPUState *cpu, TranslationBlock *last_tb, int tb_exit);
 typedef VOID (*IMAGECALLBACK) (IMG img, VOID *v);
 typedef const char* STR;
+
+// NOTE: new added
+typedef VOID (*THREAD_START_CALLBACK)(THREADID threadIndex, CONTEXT* ctxt, INT32 flags, VOID* v);
+typedef VOID (*THREAD_FINI_CALLBACK)(THREADID threadIndex, const CONTEXT* ctxt, INT32 code, VOID* v);
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,6 +68,24 @@ ADDRINT PIN_GetSyscallReturn (const CONTEXT *ctxt, SYSCALL_STANDARD std);
 VOID PIN_SetSyscallReturn (CONTEXT *ctxt, SYSCALL_STANDARD std, ADDRINT val);
 VOID PIN_DumpGuestMemory (const char* filename);
 VOID PIN_DumpGuestReg (const char* filename);
+
+
+/* Buffering apis */
+#define BUFFER_ID uint64_t
+#define BUFFER_ID_INVALID -1
+
+typedef VOID* (*TRACE_BUFFER_CALLBACK)(BUFFER_ID id, THREADID tid, const CONTEXT* ctxt, VOID* buf, UINT64 numElements, VOID* v);
+BUFFER_ID PIN_DefineTraceBuffer(size_t recordSize, UINT32 numPages, TRACE_BUFFER_CALLBACK fun, VOID* val);
+
+/* NOTE: new added thread api */
+typedef VOID (*THREAD_START_CALLBACK)(THREADID threadIndex, CONTEXT* ctxt, INT32 flags, VOID* v);
+VOID PIN_AddThreadStartFunction(THREAD_START_CALLBACK fun, VOID* val);
+typedef VOID (*THREAD_FINI_CALLBACK)(THREADID threadIndex, const CONTEXT* ctxt, INT32 code, VOID* v);
+VOID PIN_AddThreadFiniFunction(THREAD_FINI_CALLBACK fun, VOID* val);
+BOOL PIN_SetThreadData(TLS_KEY key, const VOID* data, THREADID threadId);
+TLS_KEY PIN_CreateThreadDataKey();
+VOID* PIN_GetThreadData(TLS_KEY key, THREADID threadId);
+
 
 #ifdef __cplusplus
 }

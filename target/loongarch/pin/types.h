@@ -25,6 +25,7 @@ typedef int8_t INT8;
 typedef int16_t INT16;
 typedef int32_t INT32;
 typedef int64_t INT64;
+typedef uint64_t TLS_KEY;
 
 typedef UINT64 ADDRINT;
 typedef INT64 ADDRDELTA;
