@@ -1388,15 +1388,15 @@ VOID* PIN_GetThreadData(TLS_KEY key, THREADID threadId)
 {
 }
 
-TLS_KEY PIN_CreateThreadDataKey()
+TLS_KEY PIN_CreateThreadDataKey(DESTRUCTFUN destruct_func)
 {
+    PIN_state.thread_destruct_cb = destruct_func;
 }
 
 BUFFER_ID PIN_DefineTraceBuffer(size_t recordSize, UINT32 numPages, TRACE_BUFFER_CALLBACK fun, VOID* val)
 {
     PIN_state.buffer_full_cb = fun;
     PIN_state.buffer_full_val = val;
-
     PIN_buffer_info.buffer_size[PIN_buffer_info.buffer_id] = recordSize * numPages;
 
     return PIN_buffer_info.buffer_id++;

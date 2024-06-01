@@ -23,6 +23,7 @@ typedef const char* STR;
 // NOTE: new added
 typedef VOID (*THREAD_START_CALLBACK)(THREADID threadIndex, CONTEXT* ctxt, INT32 flags, VOID* v);
 typedef VOID (*THREAD_FINI_CALLBACK)(THREADID threadIndex, const CONTEXT* ctxt, INT32 code, VOID* v);
+typedef VOID (*DESTRUCTFUN)(void*);
 
 #ifdef __cplusplus
 extern "C" {
@@ -83,7 +84,7 @@ VOID PIN_AddThreadStartFunction(THREAD_START_CALLBACK fun, VOID* val);
 typedef VOID (*THREAD_FINI_CALLBACK)(THREADID threadIndex, const CONTEXT* ctxt, INT32 code, VOID* v);
 VOID PIN_AddThreadFiniFunction(THREAD_FINI_CALLBACK fun, VOID* val);
 BOOL PIN_SetThreadData(TLS_KEY key, const VOID* data, THREADID threadId);
-TLS_KEY PIN_CreateThreadDataKey();
+TLS_KEY PIN_CreateThreadDataKey(DESTRUCTFUN destruct_func);
 VOID* PIN_GetThreadData(TLS_KEY key, THREADID threadId);
 
 

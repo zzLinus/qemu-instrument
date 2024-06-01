@@ -21,6 +21,7 @@ VOID ImageLoad(IMG img, VOID* v)
 {
 	UINT32 count = 0;
 
+    fprintf(stderr,"image load\n");
 	for (SEC* sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec))
 	{
 		//fprintf(stderr, "sec %s\n", SEC_Name(sec));

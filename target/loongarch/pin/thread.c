@@ -2,6 +2,7 @@
 #include "qemu/osdep.h"
 #include "qemu.h"
 #include "pin_state.h"
+#include <stdio.h>
 
 uint32_t pin_thread_id_count = 0;
 __thread uint32_t pin_thread_id = 0;
@@ -21,7 +22,7 @@ void PIN_thread_create(void)
     void* ptr;
     pthread_once(&key_once, make_key);
     if((ptr = pthread_getspecific(key)) == NULL){
-        // FIXME:
+        fprintf(stderr,"malloc buffer for key %d\n",key);
         ptr = malloc(PIN_buffer_info.buffer_size[0]);
         pthread_setspecific(key,ptr);
     }
@@ -29,11 +30,9 @@ void PIN_thread_create(void)
 }
 
 void PIN_thread_destructor(void* ptr){
-    fprintf(stderr,"finished create! 1\n");
-    // FIXME:
+    fprintf(stderr,"finished!\n");
     if(PIN_state.thread_finish_cb != NULL)
     {
-        // FIXME: fix the arguments
         PIN_state.thread_finish_cb(PIN_ThreadId(), NULL,0,NULL);
     }
     free(ptr);

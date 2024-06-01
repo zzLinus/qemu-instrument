@@ -16,7 +16,7 @@ struct PIN_STATE {
     VOID* syscall_entry_cb_val;
     SYSCALL_EXIT_CALLBACK syscall_exit_cb;
     VOID* syscall_exit_cb_val;
-    
+
     CPU_EXEC_ENTER_CALLBACK cpu_exec_enter_cb;
     VOID* cpu_exec_enter_cb_val;
     CPU_EXEC_EXIT_CALLBACK cpu_exec_exit_cb;
@@ -34,6 +34,8 @@ struct PIN_STATE {
 
     THREAD_FINI_CALLBACK thread_finish_cb;
     VOID* thread_finish_val;
+
+    DESTRUCTFUN thread_destruct_cb;
 };
 
 struct PIN_INSTRU_CONTEXT {
@@ -45,8 +47,8 @@ struct PIN_INSTRU_CONTEXT {
 
 struct PIN_BUFFER_TLS{
     uint64_t buffer_id;
-    // FIXME: only support 256 buffers in total
-    uint64_t buffer_size[256];
+    // WARN: only support 8buffers per thread in total
+    uint64_t buffer_size[8];
 };
 
 

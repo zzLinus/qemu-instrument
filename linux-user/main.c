@@ -931,7 +931,7 @@ int main(int argc, char **argv, char **envp)
     }
 
 #ifdef CONFIG_LMJ
-    if (TRUE) {
+    if (false) {
         /* debug info */
         fprintf(stderr, "\n[argv]\n");
         char **_argv = (char **)info->arg_start;
@@ -1000,6 +1000,7 @@ int main(int argc, char **argv, char **envp)
         gdb_handlesig(cpu, 0);
     }
 
+    fprintf(stderr,"cpu_loop\n");
     cpu_loop(env);
     /* never exits */
     return 0;
