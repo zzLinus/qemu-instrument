@@ -20,7 +20,7 @@ extern pthread_once_t key_once;
 
 
 /* 仅内部使用 */
-void PIN_thread_create(void);
+TLS_KEY PIN_thread_create_key(void);
 void PIN_thread_destructor(void* ptr);
 
 

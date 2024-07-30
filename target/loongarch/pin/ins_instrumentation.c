@@ -1391,6 +1391,7 @@ VOID* PIN_GetThreadData(TLS_KEY key, THREADID threadId)
 TLS_KEY PIN_CreateThreadDataKey(DESTRUCTFUN destruct_func)
 {
     PIN_state.thread_destruct_cb = destruct_func;
+    return PIN_thread_create_key();
 }
 
 BUFFER_ID PIN_DefineTraceBuffer(size_t recordSize, UINT32 numPages, TRACE_BUFFER_CALLBACK fun, VOID* val)

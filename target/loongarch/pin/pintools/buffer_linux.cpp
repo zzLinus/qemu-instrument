@@ -156,15 +156,17 @@ VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v) {
   // There is a new MLOG for every thread.  Opens the output file.
   MLOG *mlog = new MLOG(tid);
 
-  fprintf(stderr, "Thread start\n");
-  // A thread will need to look up its MLOG, so save pointer in TLS
+  // Initialize thread-specific data not handled by buffering api.
+	mlog_key = PIN_CreateThreadDataKey(0);
+  fprintf(stderr, "Thread start tid : %d key :%ld\n",tid, mlog_key);
+
   PIN_SetThreadData(mlog_key, mlog, tid);
 }
 
 VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v) {
-  MLOG *mlog = static_cast<MLOG *>(PIN_GetThreadData(mlog_key, tid));
-
-  delete mlog;
+	//FIXME: cause seg fault
+  //MLOG *mlog = static_cast<MLOG *>(PIN_GetThreadData(mlog_key, tid));
+  //delete mlog;
 
   fprintf(stderr, "Thread finish\n");
   PIN_SetThreadData(mlog_key, 0, tid);
@@ -207,8 +209,6 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  // Initialize thread-specific data not handled by buffering api.
-  //mlog_key = PIN_CreateThreadDataKey(0);
 
   // add an instrumentation function
   TRACE_AddInstrumentFunction(Trace, 0);

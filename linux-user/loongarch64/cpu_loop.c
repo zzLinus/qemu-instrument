@@ -11,6 +11,7 @@
 #include "user-internals.h"
 #include "cpu_loop-common.h"
 #include "signal-common.h"
+#include <stdio.h>
 #ifdef CONFIG_LMJ
 #include "target/loongarch/pin/pin_state.h"
 #endif
@@ -21,8 +22,7 @@ void cpu_loop(CPULoongArchState *env)
     int trapnr, si_code;
     abi_long ret;
 
-    THREAD_start_instrument(0,NULL,0,NULL);
-
+    THREAD_start_instrument(((TaskState *)cs->opaque)->ts_tid,NULL,0,NULL);
     for (;;) {
         cpu_exec_start(cs);
         trapnr = cpu_exec(cs);
