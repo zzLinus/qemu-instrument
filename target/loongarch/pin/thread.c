@@ -18,14 +18,24 @@ TLS_KEY PIN_thread_create_key(void)
 {
     pthread_key_t key;
     fprintf(stderr,"thread create!\n");
-    void* ptr;
-    make_key(&key);
-    if((ptr = pthread_getspecific(key)) == NULL){
-        ptr = malloc(PIN_buffer_info.buffer_size[0]);
-        pthread_setspecific(key,ptr);
-    }
     pin_thread_id = ++pin_thread_id_count;
+    make_key(&key);
     return key;
+}
+
+void PIN_thread_bind_key(pthread_key_t key, const void* ptr)
+{
+    if(pthread_getspecific(key) == NULL){
+        pthread_setspecific(key,ptr);
+        ptr = pthread_getspecific(key);
+    }
+}
+
+void *PIN_thread_getbind(pthread_key_t key)
+{
+    void *ptr = NULL;
+    ptr = pthread_getspecific(key);
+    return ptr;
 }
 
 void PIN_thread_destructor(void* ptr){

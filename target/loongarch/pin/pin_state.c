@@ -33,7 +33,6 @@ struct PIN_INSTRU_CONTEXT PIN_instru_ctx = {
 struct PIN_BUFFER_TLS PIN_buffer_info = 
 {
     .buffer_id = 0,
-    .buffer_size = {0},
 };
 
 void INS_instrument(INS ins)

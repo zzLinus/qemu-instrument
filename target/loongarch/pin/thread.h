@@ -22,6 +22,7 @@ extern pthread_once_t key_once;
 /* 仅内部使用 */
 TLS_KEY PIN_thread_create_key(void);
 void PIN_thread_destructor(void* ptr);
-
+void PIN_thread_bind_key(pthread_key_t key, const void* ptr);
+void *PIN_thread_getbind(pthread_key_t key);
 
 #endif

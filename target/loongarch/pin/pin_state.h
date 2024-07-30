@@ -47,8 +47,6 @@ struct PIN_INSTRU_CONTEXT {
 
 struct PIN_BUFFER_TLS{
     uint64_t buffer_id;
-    // WARN: only support 8buffers per thread in total
-    uint64_t buffer_size[8];
 };
 
 

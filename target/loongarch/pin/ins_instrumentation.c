@@ -1,5 +1,6 @@
 #include "ins_instrumentation.h"
 #include "ins_inspection.h"
+#include "pin/thread.h"
 #include "pin_state.h"
 #include <stdarg.h>
 #include "../instrument/util/error.h"
@@ -1367,7 +1368,6 @@ STR IMG_Name(IMG img)
     return get_img_name((image *)img);
 }
 
-// TODO:
 VOID PIN_AddThreadFiniFunction(THREAD_FINI_CALLBACK fun, VOID* val)
 {
     PIN_state.thread_finish_cb = fun;
@@ -1382,10 +1382,22 @@ VOID PIN_AddThreadStartFunction(THREAD_START_CALLBACK fun, VOID* val)
 
 BOOL PIN_SetThreadData(TLS_KEY key, const VOID* data, THREADID threadId)
 {
+    if(data != NULL){
+        PIN_thread_bind_key(key, data);
+        return true;
+    }
+    return false;
 }
 
 VOID* PIN_GetThreadData(TLS_KEY key, THREADID threadId)
 {
+    void *ptr;
+    if((ptr = PIN_thread_getbind(key)) != NULL)
+    {
+        fprintf(stderr,"get bind sucess\n");
+        return ptr;
+    }
+    return NULL;
 }
 
 TLS_KEY PIN_CreateThreadDataKey(DESTRUCTFUN destruct_func)
@@ -1398,7 +1410,6 @@ BUFFER_ID PIN_DefineTraceBuffer(size_t recordSize, UINT32 numPages, TRACE_BUFFER
 {
     PIN_state.buffer_full_cb = fun;
     PIN_state.buffer_full_val = val;
-    PIN_buffer_info.buffer_size[PIN_buffer_info.buffer_id] = recordSize * numPages;
 
     return PIN_buffer_info.buffer_id++;
 }

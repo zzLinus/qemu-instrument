@@ -60,10 +60,10 @@ makefile不在本地做任何编译工作，需要通过3C5000服务器编译，
 对于Thread跟buffering相关的api正在开发中
 - [x] PIN_AddThreadStartFunction()
 - [x] PIN_AddThreadFiniFunction()
-[🔧] PIN_DefineTraceBuffer()
-[🔧] PIN_CreateThreadDataKey()
-[🔧] PIN_SetThreadData()e
-[🔧] PIN_GetThreadData()
+- [x] PIN_DefineTraceBuffer()
+- [x] PIN_CreateThreadDataKey()
+- [x] PIN_SetThreadData()e
+- [x] PIN_GetThreadData()
 [🔧] INS_InsertFillBuffer (INS ins, IPOINT action, BUFFER_ID id,...)
 [🔧] INS_InsertFillBufferPredicated (INS ins, IPOINT action, BUFFER_ID id,...)
 [🔧] INS_InsertFillBufferThen (INS ins, IPOINeESeeT action, BUFFER_ID id,...)

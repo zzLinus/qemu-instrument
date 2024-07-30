@@ -164,9 +164,9 @@ VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v) {
 }
 
 VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v) {
-	//FIXME: cause seg fault
-  //MLOG *mlog = static_cast<MLOG *>(PIN_GetThreadData(mlog_key, tid));
-  //delete mlog;
+	// WARN: don't wark when multi thread,because only one mlog_key get store globally
+	MLOG *mlog = static_cast<MLOG *>(PIN_GetThreadData(mlog_key, tid));
+	delete mlog;
 
   fprintf(stderr, "Thread finish\n");
   PIN_SetThreadData(mlog_key, 0, tid);
