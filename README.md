@@ -64,7 +64,7 @@ makefile不在本地做任何编译工作，需要通过3C5000服务器编译，
 - [x] PIN_CreateThreadDataKey()
 - [x] PIN_SetThreadData()e
 - [x] PIN_GetThreadData()
-[🔧] INS_InsertFillBuffer (INS ins, IPOINT action, BUFFER_ID id,...)
+- [x] INS_InsertFillBuffer (INS ins, IPOINT action, BUFFER_ID id,...)
 [🔧] INS_InsertFillBufferPredicated (INS ins, IPOINT action, BUFFER_ID id,...)
 [🔧] INS_InsertFillBufferThen (INS ins, IPOINeESeeT action, BUFFER_ID id,...)
 对于正在适配的buffer_linux pintools，期中每个buffer是作为一个TLS数据存储的，这里需要通过各种pthread的api进行合理的管理，我们目前完成了ThreadStart ThreadFinish相关的pin api，计划下一步进行Thread TSL，Buffering api功能的开发

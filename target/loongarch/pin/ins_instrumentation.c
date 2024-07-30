@@ -3,6 +3,9 @@
 #include "pin/thread.h"
 #include "pin_state.h"
 #include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
 #include "../instrument/util/error.h"
 #include "../instrument/tr_data.h"
 #include "../instrument/regs.h"
@@ -1394,7 +1397,7 @@ VOID* PIN_GetThreadData(TLS_KEY key, THREADID threadId)
     void *ptr;
     if((ptr = PIN_thread_getbind(key)) != NULL)
     {
-        fprintf(stderr,"get bind sucess\n");
+        /**fprintf(stderr,"get bind sucess\n");*/
         return ptr;
     }
     return NULL;
@@ -1406,10 +1409,58 @@ TLS_KEY PIN_CreateThreadDataKey(DESTRUCTFUN destruct_func)
     return PIN_thread_create_key();
 }
 
+// TODO: add multi thread support
 BUFFER_ID PIN_DefineTraceBuffer(size_t recordSize, UINT32 numPages, TRACE_BUFFER_CALLBACK fun, VOID* val)
 {
     PIN_state.buffer_full_cb = fun;
     PIN_state.buffer_full_val = val;
 
-    return PIN_buffer_info.buffer_id++;
+    PIN_buffer_info.buffer_size = recordSize * numPages;
+    PIN_buffer_info.elenums = numPages;
+
+    BUFFER_ID buf_id = PIN_thread_create_key();
+    void * def_buf = malloc(PIN_buffer_info.buffer_size);
+    PIN_thread_bind_key(buf_id,def_buf);
+
+    return buf_id;
+}
+
+VOID INS_InsertFillBuffer(INS ins, IPOINT action, BUFFER_ID id, ...)
+{
+    va_list args;
+    va_start(args, id);
+    IARG_TYPE iter;
+    size_t off_set;
+    uint32_t memop;
+    void * buf_start;
+
+    void * buf = PIN_GetThreadData(id, 0);
+    if(PIN_buffer_info.water_mark >= PIN_buffer_info.elenums){
+        if(PIN_state.buffer_full_cb != NULL){
+            PIN_state.buffer_full_cb(id, 0, NULL, buf, PIN_buffer_info.elenums, NULL);
+            PIN_buffer_info.water_mark = 0;
+        }
+    }
+
+    buf_start = buf + (PIN_buffer_info.water_mark * (PIN_buffer_info.buffer_size / PIN_buffer_info.elenums));
+
+    // TODO: support more iarg, only dump ins pc for now
+    while((iter = va_arg(args, IARG_TYPE)) != IARG_END){
+        switch (iter) {
+            case IARG_INST_PTR:
+                off_set = va_arg(args, size_t);
+                memcpy(buf_start + off_set, &ins->pc, sizeof(uint64_t));
+                break;
+            case IARG_MEMORYOP_EA:
+                memop = va_arg(args, uint32_t);
+                off_set = va_arg(args, size_t);
+                memcpy(buf_start + off_set, &memop, sizeof(uint32_t));
+                break;
+            case IARG_UINT32: break;
+            case IARG_BOOL: break;
+            default:;
+        }
+    }
+
+    PIN_buffer_info.water_mark++;
 }

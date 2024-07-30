@@ -66,8 +66,8 @@ MLOG::~MLOG() { _ofile.close(); }
 VOID MLOG::DumpBufferToFile(struct MEMREF *reference, UINT64 numElements,
                             THREADID tid) {
   for (UINT64 i = 0; i < numElements; i++, reference++) {
-    if (reference->ea != 0)
-      _ofile << reference->pc << "   " << reference->ea << endl;
+		 //if (reference->ea != 0)
+			 _ofile << reference->pc << "  " << reference->ea << endl;
   }
 }
 
@@ -98,22 +98,21 @@ VOID Trace(TRACE trace, VOID *v) {
         // Note that if the operand is both read and written we log it once
         // for each.
         if (INS_MemoryOperandIsRead(ins, memOp)) {
-          // INS_InsertFillBuffer(ins, IPOINT_BEFORE, bufId, IARG_INST_PTR,
-          // offsetof(struct MEMREF, pc), IARG_MEMORYOP_EA,
-          //                      memOp, offsetof(struct MEMREF, ea),
-          //                      IARG_UINT32, refSize, offsetof(struct MEMREF,
-          //                      size),
-          //                  IARG_BOOL, TRUE, offsetof(struct MEMREF, read),
-          //                  IARG_END);
+          INS_InsertFillBuffer(ins, IPOINT_BEFORE, bufId, IARG_INST_PTR,
+                               offsetof(struct MEMREF, pc), IARG_MEMORYOP_EA,
+                               memOp, offsetof(struct MEMREF, ea), IARG_UINT32,
+                               refSize, offsetof(struct MEMREF, size),
+                               IARG_BOOL, true, offsetof(struct MEMREF, read),
+                               IARG_END);
         }
 
         if (INS_MemoryOperandIsWritten(ins, memOp)) {
-          // INS_InsertFillBuffer(ins, IPOINT_BEFORE, bufId, IARG_INST_PTR,
-          // offsetof(struct MEMREF, pc), IARG_MEMORYOP_EA,
-          //                      memOp, offsetof(struct MEMREF, ea),
-          //                      IARG_UINT32, refSize, offsetof(struct MEMREF,
-          //                      size), IARG_BOOL, FALSE, offsetof(struct
-          //                      MEMREF, read), IARG_END);
+          INS_InsertFillBuffer(ins, IPOINT_BEFORE, bufId, IARG_INST_PTR,
+                               offsetof(struct MEMREF, pc), IARG_MEMORYOP_EA,
+                               memOp, offsetof(struct MEMREF, ea), IARG_UINT32,
+                               refSize, offsetof(struct MEMREF, size),
+                               IARG_BOOL, false, offsetof(struct MEMREF, read),
+                               IARG_END);
         }
       }
     }
@@ -157,16 +156,17 @@ VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v) {
   MLOG *mlog = new MLOG(tid);
 
   // Initialize thread-specific data not handled by buffering api.
-	mlog_key = PIN_CreateThreadDataKey(0);
-  fprintf(stderr, "Thread start tid : %d key :%ld\n",tid, mlog_key);
+  mlog_key = PIN_CreateThreadDataKey(0);
+  fprintf(stderr, "Thread start tid : %d key :%ld %p\n", tid, mlog_key, mlog);
 
   PIN_SetThreadData(mlog_key, mlog, tid);
 }
 
 VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v) {
-	// WARN: don't wark when multi thread,because only one mlog_key get store globally
-	MLOG *mlog = static_cast<MLOG *>(PIN_GetThreadData(mlog_key, tid));
-	delete mlog;
+  // WARN: don't wark when multi thread,because only one mlog_key get store
+  // globally
+  MLOG *mlog = static_cast<MLOG *>(PIN_GetThreadData(mlog_key, tid));
+  delete mlog;
 
   fprintf(stderr, "Thread finish\n");
   PIN_SetThreadData(mlog_key, 0, tid);
@@ -201,14 +201,12 @@ int main(int argc, char *argv[]) {
 
   // Initialize the memory reference buffer;
   // set up the callback to process the buffer.
-  //  FIXME:
   bufId = PIN_DefineTraceBuffer(sizeof(struct MEMREF), NUM_BUF_PAGES,
                                 BufferFull, 0);
   if (bufId == BUFFER_ID_INVALID) {
     cerr << "Error: could not allocate initial buffer" << endl;
     return 1;
   }
-
 
   // add an instrumentation function
   TRACE_AddInstrumentFunction(Trace, 0);

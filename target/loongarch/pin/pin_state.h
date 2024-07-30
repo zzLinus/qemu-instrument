@@ -46,7 +46,9 @@ struct PIN_INSTRU_CONTEXT {
 };
 
 struct PIN_BUFFER_TLS{
-    uint64_t buffer_id;
+    uint64_t buffer_size;
+    uint64_t elenums;
+    uint64_t water_mark;
 };
 
 

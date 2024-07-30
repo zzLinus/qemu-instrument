@@ -20,6 +20,10 @@ typedef VOID (*CPU_EXEC_EXIT_CALLBACK) (CPUState *cpu, TranslationBlock *last_tb
 typedef VOID (*IMAGECALLBACK) (IMG img, VOID *v);
 typedef const char* STR;
 
+/* Buffering apis */
+#define BUFFER_ID uint64_t
+#define BUFFER_ID_INVALID -1
+
 // NOTE: new added
 typedef VOID (*THREAD_START_CALLBACK)(THREADID threadIndex, CONTEXT* ctxt, INT32 flags, VOID* v);
 typedef VOID (*THREAD_FINI_CALLBACK)(THREADID threadIndex, const CONTEXT* ctxt, INT32 code, VOID* v);
@@ -52,6 +56,8 @@ VOID BBL_InsertThenCall (BBL bbl, IPOINT action, AFUNPTR funptr,...);
 VOID TRACE_InsertCall(TRACE trace, IPOINT action, AFUNPTR funptr, ...);
 VOID RTN_InsertCall(RTN *rtn, IPOINT action, AFUNPTR funptr, ...);
 VOID RTN_instrument(TRACE trace);
+// NOTE: new added
+VOID INS_InsertFillBuffer(INS ins, IPOINT action, BUFFER_ID id, ...);
 
 /* add imm to value in ptr */
 VOID INS_InsertInlineAdd(INS ins, IPOINT action, VOID* ptr, UINT64 imm, BOOL atomic);
@@ -71,9 +77,6 @@ VOID PIN_DumpGuestMemory (const char* filename);
 VOID PIN_DumpGuestReg (const char* filename);
 
 
-/* Buffering apis */
-#define BUFFER_ID uint64_t
-#define BUFFER_ID_INVALID -1
 
 typedef VOID* (*TRACE_BUFFER_CALLBACK)(BUFFER_ID id, THREADID tid, const CONTEXT* ctxt, VOID* buf, UINT64 numElements, VOID* v);
 BUFFER_ID PIN_DefineTraceBuffer(size_t recordSize, UINT32 numPages, TRACE_BUFFER_CALLBACK fun, VOID* val);
