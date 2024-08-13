@@ -8,7 +8,6 @@
 //
 
 #include <stdio.h>
-#include <iostream>
 #include "pintool.h"
 #include "../../instrument/elf/symbol.h"
 #include "../ins_inspection.h"
@@ -21,13 +20,13 @@ VOID ImageLoad(IMG img, VOID* v)
 {
 	UINT32 count = 0;
 
-    fprintf(stderr,"image load\n");
+  fprintf(stderr,"image load\n");
 	for (SEC* sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec))
 	{
-		//fprintf(stderr, "sec %s\n", SEC_Name(sec));
+		fprintf(stderr, "sec %s\n", SEC_Name(sec));
 		for (RTN* rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn))
 		{
-			//fprintf(stderr, "rtn %s\n", RTN_Name(rtn));
+			fprintf(stderr, "rtn %s\n", RTN_Name(rtn));
 			// Prepare for processing of RTN, an  RTN is not broken up into BBLs,
 			// it is merely a sequence of INSs
 			RTN_Open(rtn);

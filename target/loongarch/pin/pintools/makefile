@@ -26,12 +26,13 @@ NAMES += branch_count
 NAMES += isampling
 NAMES += branch_offset
 NAMES += mem_trace
-NAMES += staticicount
 NAMES += champsim
 NAMES += champsim_full
 NAMES += champsim_slice
 NAMES += champsim_multi
+NAMES += staticicount
 NAMES += buffer_linux
+NAMES += imageload
 
 SONAMES := $(addsuffix .so,$(addprefix lib,$(NAMES)))
 

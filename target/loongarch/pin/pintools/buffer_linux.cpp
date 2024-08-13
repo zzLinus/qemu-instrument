@@ -11,6 +11,13 @@ using std::hex;
 using std::ofstream;
 using std::string;
 
+VOID *BufferFull(uint64_t id, THREADID tid, const CONTEXT *ctxt, VOID *buf,
+                 UINT64 numElements, VOID *v);
+VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v);
+VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v);
+INT32 Usage();
+VOID Trace(TRACE trace, VOID *v);
+
 uint64_t bufId;
 
 string log_file = "mlog";
@@ -66,8 +73,8 @@ MLOG::~MLOG() { _ofile.close(); }
 VOID MLOG::DumpBufferToFile(struct MEMREF *reference, UINT64 numElements,
                             THREADID tid) {
   for (UINT64 i = 0; i < numElements; i++, reference++) {
-		 //if (reference->ea != 0)
-			 _ofile << reference->pc << "  " << reference->ea << endl;
+    // if (reference->ea != 0)
+    _ofile << reference->pc << "  " << reference->ea << endl;
   }
 }
 
