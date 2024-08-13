@@ -17,6 +17,13 @@ typedef enum {
   IPOINT_TAKEN_BRANCH
 } IPOINT;
 
+typedef enum
+{
+    FPOINT_BEFORE,          ///< Call-back in parent, just before fork
+    FPOINT_AFTER_IN_PARENT, ///< Call-back in parent, immediately after fork
+    FPOINT_AFTER_IN_CHILD   ///< Call-back in child, immediately after fork
+} FPOINT;
+
 typedef enum {
   CALL_ORDER_FIRST = 100,
   CALL_ORDER_DEFAULT = 200,

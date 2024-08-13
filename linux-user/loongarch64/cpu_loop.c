@@ -21,8 +21,9 @@ void cpu_loop(CPULoongArchState *env)
     CPUState *cs = env_cpu(env);
     int trapnr, si_code;
     abi_long ret;
+    THREADID tid = ((TaskState *)cs->opaque)->ts_tid;
 
-    THREAD_start_instrument(((TaskState *)cs->opaque)->ts_tid,NULL,0,NULL);
+    THREAD_start_instrument(tid,NULL,0,NULL);
     for (;;) {
         cpu_exec_start(cs);
         trapnr = cpu_exec(cs);
@@ -40,11 +41,22 @@ void cpu_loop(CPULoongArchState *env)
                 THREAD_finish_instrument(0,NULL,0,NULL);
             }
 
+            if(env->gpr[11] == TARGET_NR_clone) {FORK_before(tid,NULL,NULL);}
             ret = do_syscall(env, env->gpr[11],
                              env->gpr[4], env->gpr[5],
                              env->gpr[6], env->gpr[7],
                              env->gpr[8], env->gpr[9],
                              -1, -1);
+            if(env->gpr[11] == TARGET_NR_clone) 
+            {
+                if(tid != ((TaskState *)cs->opaque)->ts_tid){
+                    tid = ((TaskState *)cs->opaque)->ts_tid;
+                    FORK_afterc(tid,NULL,NULL);
+                }else{
+                    FORK_afterp(tid,NULL,NULL);
+                }
+            }
+
             if (ret == -QEMU_ERESTARTSYS) {
                 env->pc -= 4;
                 break;

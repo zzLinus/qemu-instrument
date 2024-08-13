@@ -13,6 +13,7 @@
 typedef VOID (*INS_INSTRUMENT_CALLBACK) (INS ins, VOID* v);
 typedef VOID (*TRACE_INSTRUMENT_CALLBACK) (TRACE trace, VOID *v);
 typedef VOID (*FINI_CALLBACK) (INT32 code, VOID *v);
+typedef VOID (*FORK_CALLBACK)(THREADID threadid, const CONTEXT* ctxt, VOID* arg);
 typedef VOID (*SYSCALL_ENTRY_CALLBACK) (THREADID threadIndex, CONTEXT *ctxt, SYSCALL_STANDARD std, VOID *v);
 typedef VOID (*SYSCALL_EXIT_CALLBACK) (THREADID threadIndex, CONTEXT *ctxt, SYSCALL_STANDARD std, VOID *v);
 typedef VOID (*CPU_EXEC_ENTER_CALLBACK) (CPUState *cpu, TranslationBlock *tb);
@@ -90,6 +91,12 @@ VOID PIN_AddThreadFiniFunction(THREAD_FINI_CALLBACK fun, VOID* val);
 BOOL PIN_SetThreadData(TLS_KEY key, const VOID* data, THREADID threadId);
 TLS_KEY PIN_CreateThreadDataKey(DESTRUCTFUN destruct_func);
 VOID* PIN_GetThreadData(TLS_KEY key, THREADID threadId);
+
+VOID PIN_AddForkFunction(FPOINT point, FORK_CALLBACK fun, VOID* val);
+THREADID PIN_GetPid(void);
+VOID PIN_InitLock(PIN_LOCK* lock);
+VOID PIN_GetLock(PIN_LOCK* lock, INT32 val);
+INT32 PIN_ReleaseLock(PIN_LOCK* lock);
 
 
 #ifdef __cplusplus

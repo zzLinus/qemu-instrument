@@ -1,27 +1,27 @@
 - [x] buffer_linux.so          `INS_InsertFillBuffer()` 没写                     OK😆
-- [ ] countreps.so    (s) x86 magic
-- [ ] detach.so          🧐
-- [ ] emudiv.so     🧐`PIN_AddInternalExceptionHandler()` 没写    
+- [ ] countreps.so         (s) x86 magic
+- [ ] detach.so            🧐
+- [ ] emudiv.so           🧐`PIN_AddInternalExceptionHandler()` 没写
 - [ ] follow_child_tool.so   `Instrumenting child processes` 没写
-- [ ] fork_jit_tool.so  `Instrumenting Before and After Forks` 没写 
+- [x] fork_jit_tool.so      `Instrumenting Before and After Forks` 没写          OK😆
 - [x] imageload.so              🧐                                               OK😆
 - [x] inscount0.so                                                               小🐲人
-- [x] inscount1.so       数ins per bbl bbl_count                                 小🐲人
-- [ ] inscount2.so     🧐 Letting Pin Decide Where to Instrument
+- [x] inscount1.so         数ins per bbl bbl_count                               小🐲人
+- [ ] inscount2.so       🧐 Letting Pin Decide Where to Instrument
 - [x] inscount_tls.so      Thread Local Storage 没写                             OK😆
 - [ ] invocation.so       插桩位置 `IPOINT` 目前只支持 `IPOINT_BEFORE`
 - [x] isampling.so         isampling                                             小🐲人
 - [x] itrace.so            跟isampling基本是一个东西                             小🐲人
 - [ ] malloc_mt.so           🥹 multi-thread stuff
 - [x] malloctrace.so         routine                                             小🐲人
-- [x] nonstatica.so      🧐                                                      OK😆
+- [x] nonstatica.so        🧐                                                    OK😆
 - [x] pinatrace.so           mem_trace                                           小🐲人
 - [ ] proccount.so         🧐 `RTN_AddInstrumentFunction()`没写
-- [ ] replacesigprobed.so     整个`probe mode`都没写呢 
-- [ ] safecopy.so            🧐 `PIN_SafeCopy` 没写       
+- [ ] replacesigprobed.so     整个`probe mode`都没写呢
+- [ ] safecopy.so            🧐 `PIN_SafeCopy` 没写
 - [ ] stack-debugger.so   `Advanced Debugging Extensions on Linux` 没写
-- [x] staticcount.so             🧐                                               OK😆
-- [x] strace.soe                 strace                                           小🐲人
+- [x] staticcount.so             🧐                                              OK😆
+- [x] strace.soe                 strace                                          小🐲人
 
 
 # Pin API 实现情况
@@ -39,7 +39,7 @@
 - [x] 176 VOID 	INS_InsertThenCall (INS ins, IPOINT action, AFUNPTR funptr,...)
 - [ ] 5   VOID 	INS_InsertIfPredicatedCall (INS ins, IPOINT action, AFUNPTR funptr,...)
 - [ ] 5   VOID 	INS_InsertThenPredicatedCall (INS ins, IPOINT action, AFUNPTR funptr,...)
-- [ ] 26  VOID 	INS_InsertFillBuffer (INS ins, IPOINT action, BUFFER_ID id,...)
+- [x] 26  VOID 	INS_InsertFillBuffer (INS ins, IPOINT action, BUFFER_ID id,...)
 - [ ] 4   VOID 	INS_InsertFillBufferPredicated (INS ins, IPOINT action, BUFFER_ID id,...)
 - [ ] 4   VOID 	INS_InsertFillBufferThen (INS ins, IPOINeESeeT action, BUFFER_ID id,...)
 

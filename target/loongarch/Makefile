@@ -4,7 +4,8 @@ SERV_USERNAME="root"
 SERV_IP="www.yongxiang.work"
 #SOT="/opt/devel/pintest"
 #SOT="/opt/devel/thread"
-SOT="/opt/devel/pintest-c"
+#SOT="/opt/devel/pintest-c"
+SOT="/opt/devel/fork_app"
 #SOT="/opt/devel/coremark/coremark.exe"
 #SOT="/usr/bin/ls"
 RES_FILE=".res"
@@ -41,7 +42,8 @@ NAMES :=
 #NAMES += buffer_linux
 #NAMES += imageload
 #NAMES += inscount_tls
-NAMES += nonstatica
+#NAMES += nonstatica
+NAMES += fork_jit_tool
 
 SONAMES := $(addsuffix .so,$(addprefix lib,$(NAMES)))
 

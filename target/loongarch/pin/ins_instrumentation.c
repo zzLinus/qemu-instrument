@@ -1409,6 +1409,38 @@ TLS_KEY PIN_CreateThreadDataKey(DESTRUCTFUN destruct_func)
     return PIN_thread_create_key();
 }
 
+VOID PIN_AddForkFunction(FPOINT point, FORK_CALLBACK fun, VOID* val)
+{
+    switch (point)
+    {
+        case FPOINT_BEFORE: PIN_state.fork_before_cb = fun; break;
+        case FPOINT_AFTER_IN_PARENT: PIN_state.fork_afterp_cb = fun; break;
+        case FPOINT_AFTER_IN_CHILD: PIN_state.fork_afterc_cb = fun; break;
+        default: assert(0);
+    };
+}
+
+THREADID PIN_GetPid(void)
+{
+}
+
+VOID PIN_InitLock(PIN_LOCK* lock)
+{
+    *lock = pin_lock_default();
+}
+
+VOID PIN_GetLock(PIN_LOCK *lock, INT32 val)
+{
+    pin_get_lock(lock);
+    lock->_owner = val;
+}
+
+INT32 PIN_ReleaseLock(PIN_LOCK *lock)
+{
+    pin_release_lock(lock);
+    return lock->_owner;
+}
+
 // TODO: add multi thread support
 BUFFER_ID PIN_DefineTraceBuffer(size_t recordSize, UINT32 numPages, TRACE_BUFFER_CALLBACK fun, VOID* val)
 {

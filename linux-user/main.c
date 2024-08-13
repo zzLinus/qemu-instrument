@@ -1000,7 +1000,6 @@ int main(int argc, char **argv, char **envp)
         gdb_handlesig(cpu, 0);
     }
 
-    fprintf(stderr,"cpu_loop\n");
     cpu_loop(env);
     /* never exits */
     return 0;

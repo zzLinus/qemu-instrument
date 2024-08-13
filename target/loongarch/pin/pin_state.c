@@ -163,3 +163,24 @@ void THREAD_finish_instrument(THREADID tid, const CONTEXT* ctxt, INT32 code, VOI
         PIN_state.thread_finish_cb(tid,ctxt,code,v);
     }
 }
+
+void FORK_before(THREADID tid,CONTEXT* ctxt,VOID* args)
+{
+    if(PIN_state.fork_before_cb){
+        PIN_state.fork_before_cb(tid,ctxt,args);
+    }
+}
+
+void FORK_afterp(THREADID tid,CONTEXT* ctxt,VOID* args)
+{
+    if(PIN_state.fork_afterp_cb){
+        PIN_state.fork_afterp_cb(tid,ctxt,args);
+    }
+}
+
+void FORK_afterc(THREADID tid,CONTEXT* ctxt,VOID* args)
+{
+    if(PIN_state.fork_afterc_cb){
+        PIN_state.fork_afterc_cb(tid,ctxt,args);
+    }
+}

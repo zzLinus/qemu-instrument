@@ -49,16 +49,16 @@ struct compare_symbol_info {
 // NOTE: SEC section
 
 struct sec {
-    struct image *image;
-	std::string name;
-	uint64_t addr;
-	uint64_t size;
-	std::set<RTN*, compare_symbol_info> symbols;   /* symbols are ordered by addr and size */
-    std::unordered_map<std::string, RTN *> symbol_name_map;
+		struct image *image;
+		std::string name;
+		uint64_t addr;
+		uint64_t size;
+		std::set<RTN*, compare_symbol_info> symbols;   /* symbols are ordered by addr and size */
+		std::unordered_map<std::string, RTN *> symbol_name_map;
 
-	sec(const char* name,uint64_t addr, uint64_t size) : name(name), addr(addr), size(size)
-	{
-	}
+		sec(const char* name,uint64_t addr, uint64_t size) : name(name), addr(addr), size(size)
+		{
+		}
 };
 
 struct compare_section_info {
@@ -76,7 +76,7 @@ bool operator()(const sec *lhs, const sec *rhs) const
 struct image {
     std::string path;
     uintptr_t load_base;
-	std::set<SEC *,compare_section_info> sections; /* sections are ordered by addr and size */
+		std::set<SEC *,compare_section_info> sections; /* sections are ordered by addr and size */
     std::unordered_map<std::string, SEC*> section_name_map;
 
     image(const char *path, uintptr_t load_base) : path(path), load_base(load_base)
@@ -103,13 +103,13 @@ image *image_alloc(const char *path, uintptr_t load_base)
 }
 
 SEC *sec_alloc(IMG img, const char* name, uint64_t addr, uint64_t size){
-	sec * sec = new SEC(name, addr, size);
-	sec->image = (image*)img;
-	all_sections.insert(sec);
-	((image*)img)->sections.insert(sec);
-	((image*)img)->section_name_map.insert({sec->name,sec});
+		sec * sec = new SEC(name, addr, size);
+		sec->image = (image*)img;
+		all_sections.insert(sec);
+		((image*)img)->sections.insert(sec);
+		((image*)img)->section_name_map.insert({sec->name,sec});
 
-	return sec;
+		return sec;
 }
 
 RTN *rtn_alloc(SEC* sec, const char* name, uint64_t addr, uint64_t size){

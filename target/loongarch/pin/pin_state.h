@@ -36,6 +36,10 @@ struct PIN_STATE {
     VOID* thread_finish_val;
 
     DESTRUCTFUN thread_destruct_cb;
+
+    FORK_CALLBACK fork_before_cb;
+    FORK_CALLBACK fork_afterp_cb;
+    FORK_CALLBACK fork_afterc_cb;
 };
 
 struct PIN_INSTRU_CONTEXT {
@@ -51,7 +55,6 @@ struct PIN_BUFFER_TLS{
     uint64_t water_mark;
 };
 
-
 /* FIXME 线程安全吗？ */
 extern struct PIN_STATE PIN_state;
 extern struct PIN_INSTRU_CONTEXT PIN_instru_ctx;
@@ -65,6 +68,10 @@ void IMG_instrument(IMG img);
 // TODO:
 void THREAD_start_instrument(THREADID tid, CONTEXT* ctxt, INT32 flags, VOID* v);
 void THREAD_finish_instrument(THREADID tid, const CONTEXT* ctxt, INT32 code, VOID* v);
+
+void FORK_before(THREADID tid,CONTEXT* ctxt,VOID* args);
+void FORK_afterp(THREADID tid,CONTEXT* ctxt,VOID* args);
+void FORK_afterc(THREADID tid,CONTEXT* ctxt,VOID* args);
 
 /* load pintool */
 void qemu_pintool_opt_parse(const char *optarg, Error **errp);

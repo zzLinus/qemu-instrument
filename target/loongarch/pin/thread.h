@@ -18,11 +18,19 @@ THREADID PIN_ThreadId(void);
 extern pthread_key_t key;
 extern pthread_once_t key_once;
 
+typedef struct
+{
+    pthread_mutex_t _lock;           ///< Implements the lock.
+    INT32 _owner;                    ///< Used for debugging, typically the ID of the lock owner.
+}PIN_LOCK;
 
-/* 仅内部使用 */
+// use internally
 TLS_KEY PIN_thread_create_key(void);
-void PIN_thread_destructor(void* ptr);
-void PIN_thread_bind_key(pthread_key_t key, const void* ptr);
-void *PIN_thread_getbind(pthread_key_t key);
+VOID PIN_thread_destructor(void* ptr);
+VOID PIN_thread_bind_key(pthread_key_t key, const void* ptr);
+VOID* PIN_thread_getbind(pthread_key_t key);
+PIN_LOCK pin_lock_default(void);
+VOID pin_get_lock(PIN_LOCK* lock);
+VOID pin_release_lock(PIN_LOCK* lock);
 
 #endif

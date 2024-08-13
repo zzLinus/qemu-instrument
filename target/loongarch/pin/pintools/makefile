@@ -35,6 +35,7 @@ NAMES += buffer_linux
 NAMES += imageload
 NAMES += inscount_tls
 NAMES += nonstatica
+NAMES += fork_jit_tool
 
 SONAMES := $(addsuffix .so,$(addprefix lib,$(NAMES)))
 
