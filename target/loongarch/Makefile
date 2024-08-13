@@ -40,7 +40,8 @@ NAMES :=
 #NAMES += staticicount
 #NAMES += buffer_linux
 #NAMES += imageload
-NAMES += inscount_tls
+#NAMES += inscount_tls
+NAMES += nonstatica
 
 SONAMES := $(addsuffix .so,$(addprefix lib,$(NAMES)))
 

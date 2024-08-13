@@ -26,6 +26,7 @@ extern "C" {
     RTN* RTN_Next(RTN* rtn);
     bool RTN_Valid(RTN* rtn);
     const char* RTN_Name(RTN* rtn);
+    uint64_t RTN_Address(RTN* rtn);
     INS RTN_InsHead(RTN* rtn);
 
     image* image_alloc(const char* path, uintptr_t load_base);

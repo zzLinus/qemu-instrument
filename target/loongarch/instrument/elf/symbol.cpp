@@ -349,38 +349,42 @@ const char* RTN_Name(RTN* rtn)
 	return rtn->name.c_str();
 }
 
-/* do nothing ... */
+uint64_t RTN_Address(RTN* rtn)
+{
+		return rtn->addr;
+}
+
 VOID RTN_Open(RTN* rtn)
 {
     int fd = open(rtn->sec->image->path.c_str(), O_RDONLY, 0);
-	INS prev_ins = NULL;
-	for(uint64_t i = 0; i < rtn->size; i += 4) {
-		uint32_t opcode;
-		uint64_t ins_addr = rtn->addr + i - rtn->sec->image->load_base;
-		pread(fd, &opcode, sizeof(opcode), ins_addr);
-		//fprintf(stderr,"ins addr %p opcode %x\n",ins_addr,opcode);
-		Ins * origin_ins = new Ins;
-		//la_disasm(opcode, origla_disasmin_ins);
-		INS INS = new pin_ins;
-		INS->next = NULL;
-		INS->prev = NULL;
-		INS->pc = ins_addr;
-		INS->opcode = opcode;
-		INS->origin_ins = origin_ins;
-		INS->first_ins = NULL;
-		INS->last_ins = NULL;
-		INS->len = 0;
-		INS->ibefore_next_cb = NULL;
-		INS->iafter_next_cb = NULL;
-		if(i == 0) {
-			INS->prev = NULL;
-		} else {
-			prev_ins->next = INS;
-			INS->prev = prev_ins;
+		INS prev_ins = NULL;
+		for(uint64_t i = 0; i < rtn->size; i += 4) {
+				uint32_t opcode;
+				uint64_t ins_addr = rtn->addr + i - rtn->sec->image->load_base;
+				pread(fd, &opcode, sizeof(opcode), ins_addr);
+				//fprintf(stderr,"ins addr %p opcode %x\n",ins_addr,opcode);
+				Ins * origin_ins = new Ins;
+				//la_disasm(opcode, origla_disasmin_ins);
+				INS INS = new pin_ins;
+				INS->next = NULL;
+				INS->prev = NULL;
+				INS->pc = ins_addr;
+				INS->opcode = opcode;
+				INS->origin_ins = origin_ins;
+				INS->first_ins = NULL;
+				INS->last_ins = NULL;
+				INS->len = 0;
+				INS->ibefore_next_cb = NULL;
+				INS->iafter_next_cb = NULL;
+				if(i == 0) {
+					INS->prev = NULL;
+				} else {
+					prev_ins->next = INS;
+					INS->prev = prev_ins;
+				}
+				prev_ins = INS;
+				rtn->instructions.insert(INS);
 		}
-		prev_ins = INS;
-		rtn->instructions.insert(INS);
-	}
 }
 
 VOID RTN_Close(RTN* rtn)

@@ -19,9 +19,7 @@ INT32 Usage();
 VOID Trace(TRACE trace, VOID *v);
 
 uint64_t bufId;
-
 string log_file = "mlog";
-
 TLS_KEY mlog_key;
 /*
  * Number of OS pages for the buffer
@@ -170,7 +168,7 @@ VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v) {
 }
 
 VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v) {
-  // WARN: don't wark when multi thread,because only one mlog_key get store
+  // WARN: don't work when multi thread,because only one mlog_key get store
   // globally
   MLOG *mlog = static_cast<MLOG *>(PIN_GetThreadData(mlog_key, tid));
   delete mlog;
