@@ -23,6 +23,7 @@ typedef const char* STR;
 /* Buffering apis */
 #define BUFFER_ID uint64_t
 #define BUFFER_ID_INVALID -1
+#define INVALID_TLS_KEY (-1)
 
 // NOTE: new added
 typedef VOID (*THREAD_START_CALLBACK)(THREADID threadIndex, CONTEXT* ctxt, INT32 flags, VOID* v);

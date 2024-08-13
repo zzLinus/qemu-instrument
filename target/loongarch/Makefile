@@ -4,9 +4,9 @@ SERV_USERNAME="root"
 SERV_IP="www.yongxiang.work"
 #SOT="/opt/devel/pintest"
 #SOT="/opt/devel/thread"
-#SOT="/opt/devel/pintest-c"
+SOT="/opt/devel/pintest-c"
 #SOT="/opt/devel/coremark/coremark.exe"
-SOT="/usr/bin/ls"
+#SOT="/usr/bin/ls"
 RES_FILE=".res"
 SHELL=bash
 
@@ -39,7 +39,8 @@ NAMES :=
 #NAMES += champsim_multi
 #NAMES += staticicount
 #NAMES += buffer_linux
-NAMES += imageload
+#NAMES += imageload
+NAMES += inscount_tls
 
 SONAMES := $(addsuffix .so,$(addprefix lib,$(NAMES)))
 

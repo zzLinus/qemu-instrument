@@ -33,6 +33,7 @@ NAMES += champsim_multi
 NAMES += staticicount
 NAMES += buffer_linux
 NAMES += imageload
+NAMES += inscount_tls
 
 SONAMES := $(addsuffix .so,$(addprefix lib,$(NAMES)))
 
