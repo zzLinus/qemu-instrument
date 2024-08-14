@@ -30,6 +30,8 @@ typedef const char* STR;
 typedef VOID (*THREAD_START_CALLBACK)(THREADID threadIndex, CONTEXT* ctxt, INT32 flags, VOID* v);
 typedef VOID (*THREAD_FINI_CALLBACK)(THREADID threadIndex, const CONTEXT* ctxt, INT32 code, VOID* v);
 typedef VOID (*DESTRUCTFUN)(void*);
+typedef void* CHILD_PROCESS;
+typedef BOOL (*FOLLOW_CHILD_PROCESS_CALLBACK)(CHILD_PROCESS cProcess, VOID* val);
 
 #ifdef __cplusplus
 extern "C" {
@@ -98,6 +100,7 @@ VOID PIN_InitLock(PIN_LOCK* lock);
 VOID PIN_GetLock(PIN_LOCK* lock, INT32 val);
 INT32 PIN_ReleaseLock(PIN_LOCK* lock);
 
+VOID PIN_AddFollowChildProcessFunction(FOLLOW_CHILD_PROCESS_CALLBACK fun, VOID* val);
 
 #ifdef __cplusplus
 }

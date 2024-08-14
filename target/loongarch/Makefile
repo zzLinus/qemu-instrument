@@ -43,7 +43,8 @@ NAMES :=
 #NAMES += imageload
 #NAMES += inscount_tls
 #NAMES += nonstatica
-NAMES += fork_jit_tool
+#NAMES += fork_jit_tool
+NAMES += follow_child_tool
 
 SONAMES := $(addsuffix .so,$(addprefix lib,$(NAMES)))
 

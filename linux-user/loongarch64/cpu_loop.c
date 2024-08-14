@@ -42,16 +42,19 @@ void cpu_loop(CPULoongArchState *env)
             }
 
             if(env->gpr[11] == TARGET_NR_clone) {FORK_before(tid,NULL,NULL);}
+
             ret = do_syscall(env, env->gpr[11],
                              env->gpr[4], env->gpr[5],
                              env->gpr[6], env->gpr[7],
                              env->gpr[8], env->gpr[9],
                              -1, -1);
+
             if(env->gpr[11] == TARGET_NR_clone) 
             {
                 if(tid != ((TaskState *)cs->opaque)->ts_tid){
                     tid = ((TaskState *)cs->opaque)->ts_tid;
                     FORK_afterc(tid,NULL,NULL);
+                    FOLLOW_CHILD_callback(tid);
                 }else{
                     FORK_afterp(tid,NULL,NULL);
                 }

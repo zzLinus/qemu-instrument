@@ -40,6 +40,8 @@ struct PIN_STATE {
     FORK_CALLBACK fork_before_cb;
     FORK_CALLBACK fork_afterp_cb;
     FORK_CALLBACK fork_afterc_cb;
+
+    FOLLOW_CHILD_PROCESS_CALLBACK follow_child_cb;
 };
 
 struct PIN_INSTRU_CONTEXT {
@@ -68,6 +70,7 @@ void IMG_instrument(IMG img);
 // TODO:
 void THREAD_start_instrument(THREADID tid, CONTEXT* ctxt, INT32 flags, VOID* v);
 void THREAD_finish_instrument(THREADID tid, const CONTEXT* ctxt, INT32 code, VOID* v);
+void FOLLOW_CHILD_callback(THREADID tid);
 
 void FORK_before(THREADID tid,CONTEXT* ctxt,VOID* args);
 void FORK_afterp(THREADID tid,CONTEXT* ctxt,VOID* args);

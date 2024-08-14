@@ -2,7 +2,7 @@
 - [ ] countreps.so         (s) x86 magic
 - [ ] detach.so            🧐
 - [ ] emudiv.so           🧐`PIN_AddInternalExceptionHandler()` 没写
-- [ ] follow_child_tool.so   `Instrumenting child processes` 没写
+- [x] follow_child_tool.so   `Instrumenting child processes` 没写                OK😆
 - [x] fork_jit_tool.so      `Instrumenting Before and After Forks` 没写          OK😆
 - [x] imageload.so              🧐                                               OK😆
 - [x] inscount0.so                                                               小🐲人

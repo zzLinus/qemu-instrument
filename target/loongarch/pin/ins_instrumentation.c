@@ -1496,3 +1496,8 @@ VOID INS_InsertFillBuffer(INS ins, IPOINT action, BUFFER_ID id, ...)
 
     PIN_buffer_info.water_mark++;
 }
+
+VOID PIN_AddFollowChildProcessFunction(FOLLOW_CHILD_PROCESS_CALLBACK fun, VOID* val)
+{
+    PIN_state.follow_child_cb = fun;
+}

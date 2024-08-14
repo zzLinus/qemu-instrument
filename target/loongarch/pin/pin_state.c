@@ -184,3 +184,10 @@ void FORK_afterc(THREADID tid,CONTEXT* ctxt,VOID* args)
         PIN_state.fork_afterc_cb(tid,ctxt,args);
     }
 }
+
+void FOLLOW_CHILD_callback(THREADID tid)
+{
+    if(PIN_state.follow_child_cb){
+        PIN_state.follow_child_cb(&tid, NULL);
+    }
+}
