@@ -1501,3 +1501,8 @@ VOID PIN_AddFollowChildProcessFunction(FOLLOW_CHILD_PROCESS_CALLBACK fun, VOID* 
 {
     PIN_state.follow_child_cb = fun;
 }
+
+VOID RTN_AddInstrumentFunction(RTN_INSTRUMENT_CALLBACK fun, VOID* val)
+{
+    PIN_state.rtn_cb = fun;
+}

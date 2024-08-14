@@ -23,11 +23,14 @@ extern "C" {
     bool SEC_Valid(SEC* sec);
     const char* SEC_Name(SEC* sec);
     RTN* SEC_RtnHead(SEC* sec);
+    IMG SEC_Img(SEC* sec);
+
     RTN* RTN_Next(RTN* rtn);
     bool RTN_Valid(RTN* rtn);
     const char* RTN_Name(RTN* rtn);
     uint64_t RTN_Address(RTN* rtn);
     INS RTN_InsHead(RTN* rtn);
+    SEC* RTN_Sec(RTN* rtn);
 
     image* image_alloc(const char* path, uintptr_t load_base);
 

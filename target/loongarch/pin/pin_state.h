@@ -42,6 +42,8 @@ struct PIN_STATE {
     FORK_CALLBACK fork_afterc_cb;
 
     FOLLOW_CHILD_PROCESS_CALLBACK follow_child_cb;
+
+    RTN_INSTRUMENT_CALLBACK rtn_cb;
 };
 
 struct PIN_INSTRU_CONTEXT {

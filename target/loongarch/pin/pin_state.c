@@ -24,6 +24,13 @@ struct PIN_STATE PIN_state = {
     .thread_start_val = NULL,
     .thread_finish_cb = NULL,
     .thread_finish_val = NULL,
+    .thread_destruct_cb = NULL,
+    .fork_before_cb = NULL,
+    .fork_afterp_cb = NULL,
+    .fork_afterc_cb = NULL,
+    .follow_child_cb = NULL,
+    .rtn_cb = NULL
+
 };
 
 struct PIN_INSTRU_CONTEXT PIN_instru_ctx = {
@@ -191,3 +198,4 @@ void FOLLOW_CHILD_callback(THREADID tid)
         PIN_state.follow_child_cb(&tid, NULL);
     }
 }
+

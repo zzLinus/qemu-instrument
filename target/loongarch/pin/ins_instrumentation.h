@@ -32,6 +32,7 @@ typedef VOID (*THREAD_FINI_CALLBACK)(THREADID threadIndex, const CONTEXT* ctxt, 
 typedef VOID (*DESTRUCTFUN)(void*);
 typedef void* CHILD_PROCESS;
 typedef BOOL (*FOLLOW_CHILD_PROCESS_CALLBACK)(CHILD_PROCESS cProcess, VOID* val);
+typedef VOID (*RTN_INSTRUMENT_CALLBACK)(RTN* rtn, VOID* v);
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,6 +63,7 @@ VOID RTN_InsertCall(RTN *rtn, IPOINT action, AFUNPTR funptr, ...);
 VOID RTN_instrument(TRACE trace);
 // NOTE: new added
 VOID INS_InsertFillBuffer(INS ins, IPOINT action, BUFFER_ID id, ...);
+VOID RTN_AddInstrumentFunction(RTN_INSTRUMENT_CALLBACK fun, VOID* val);
 
 /* add imm to value in ptr */
 VOID INS_InsertInlineAdd(INS ins, IPOINT action, VOID* ptr, UINT64 imm, BOOL atomic);

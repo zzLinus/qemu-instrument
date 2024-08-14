@@ -112,19 +112,20 @@ SEC *sec_alloc(IMG img, const char* name, uint64_t addr, uint64_t size){
 		return sec;
 }
 
+#include <string.h>
 RTN *rtn_alloc(SEC* sec, const char* name, uint64_t addr, uint64_t size){
-    RTN *symbol = new RTN(name, addr, size);
-	symbol->sec = sec;
-    all_symbols.insert(symbol);
-	sec->symbols.insert(symbol);
-	sec->symbol_name_map.insert({symbol->name, symbol});
+		RTN *symbol = new RTN(name, addr, size);
+		symbol->sec = sec;
+		all_symbols.insert(symbol);
+		sec->symbols.insert(symbol);
+		sec->symbol_name_map.insert({symbol->name, symbol});
 
-	return symbol;
+		return symbol;
 }
 
 RTN *sec_get_symbol_by_name(SEC *sec, const char *name)
 {
-    if (sec->symbol_name_map.count(name) == 0) {
+    if (sec->symbol_name_map.count(std::string(name)) == 0) {
         return NULL;
     }
     return sec->symbol_name_map[name];
@@ -226,13 +227,12 @@ RTN *RTN_FindByName(IMG img, const CHAR *name)
 {
 	for(auto & sec: ((image*)img)->sections) {
 		RTN *sym = sec_get_symbol_by_name(sec, name);
-		if (sym == NULL || sym->addr == 0 || sym->size == 0) {
-			return NULL;
+		if (sym != NULL) {
+		  return sym;
 		}
 		if (is_symbol_name_dupcalited(name)) {
 			lswarn("symbol %s is duplicated in image.\n", name);
 		}
-		return sym;
 	}
 	return NULL;
 }
@@ -328,6 +328,11 @@ RTN* SEC_RtnHead(SEC* sec)
 	return *sec->symbols.begin();
 }
 
+IMG SEC_Img(SEC* sec)
+{
+  return (IMG)sec->image;
+}
+
 RTN* RTN_Next(RTN* rtn)
 {
 	SEC * sec= rtn->sec;
@@ -396,3 +401,9 @@ INS RTN_InsHead(RTN* rtn)
 {
 	return *rtn->instructions.begin();
 }
+
+SEC* RTN_Sec(RTN* rtn)
+{
+		return rtn->sec;
+}
+

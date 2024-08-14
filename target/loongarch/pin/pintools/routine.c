@@ -6,11 +6,11 @@
 #define FOO "foo"
 
 static VOID Arg1Before(CHAR* name, ADDRINT size) {
-    fprintf(stderr, "%s(%lx)\n", name, size);
+    fprintf(stderr, "free ==> %s(%lx)\n", name, size);
 }
  
 static VOID MallocAfter(ADDRINT ret) {
-    fprintf(stderr, " returns %lx\n", ret);
+    fprintf(stderr, "malloc ==> returns %lx\n", ret);
 }
 
 static VOID Image(IMG img, VOID* v)
