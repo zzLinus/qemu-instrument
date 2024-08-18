@@ -38,6 +38,7 @@ NAMES += nonstatica
 NAMES += fork_jit_tool
 NAMES += follow_child_tool
 NAMES += proccount
+NAMES += debug_addr2line
 
 SONAMES := $(addsuffix .so,$(addprefix lib,$(NAMES)))
 

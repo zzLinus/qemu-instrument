@@ -661,7 +661,7 @@ static void set_iargs(const ANALYSIS_CALL *cb, INS INS, Ins *cur)
                         int fcc = INS->origin_ins->opnd[0].val;
                         if (save_fpr_regs) {
                             int itemp = reg_alloc_itemp();
-                            INS_insert_ins_before(INS, cur, ins_create_3(LISA_LD_B, itemp, reg_env, env_offset_of_fcc(current_cpu, fcc))); 
+                            INS_insert_ins_before(INS, cur, ins_create_3(LISA_LD_B, itemp, reg_env, env_offset_of_fcc(current_cpu, fcc)));
                             INS_insert_ins_before(INS, cur, ins_create_2(LISA_MOVGR2CF, fcc, itemp));
                             reg_free_itemp(itemp);
                         }
@@ -744,7 +744,7 @@ static void set_iargs(const ANALYSIS_CALL *cb, INS INS, Ins *cur)
             break;
         case IARG_TSC:
             /* NOTE: In LoongArch, We can only use RDTIME_D to read Stable Counter,
-             * which has a low performance and low accuracy. What's the worse is 
+             * which has a low performance and low accuracy. What's the worse is
              * every core has a Stable Counter, leads to a wrong counting. */
             INS_insert_ins_before(INS, cur, ins_create_2(LISA_RDTIME_D, arg_reg, reg_zero));
             break;
@@ -860,7 +860,7 @@ static void save_caller_saved_regs(INS INS, Ins *cur)
             INS_insert_ins_before(INS, cur, ins_create_3(LISA_ST_B, reg_tmp, reg_env, env_offset_of_fcc(current_cpu, fcc)));
         }
         INS_insert_ins_before(INS, cur, ins_create_2(LISA_MOVFCSR2GR, reg_tmp, reg_fcsr));
-        INS_insert_ins_before(INS, cur, ins_create_3(LISA_ST_W, reg_tmp, reg_env, env_offset_of_fscr0(current_cpu))); 
+        INS_insert_ins_before(INS, cur, ins_create_3(LISA_ST_W, reg_tmp, reg_env, env_offset_of_fscr0(current_cpu)));
     }
 }
 
@@ -874,7 +874,7 @@ static void load_caller_saved_regs(INS INS, Ins *cur)
             INS_insert_ins_before(INS, cur, ins_create_3(LISA_LD_B, reg_tmp, reg_env, env_offset_of_fcc(current_cpu, fcc)));
             INS_insert_ins_before(INS, cur, ins_create_2(LISA_MOVGR2CF, reg_tmp, fcc));
         }
-        INS_insert_ins_before(INS, cur, ins_create_3(LISA_LD_W, reg_tmp, reg_env, env_offset_of_fscr0(current_cpu))); 
+        INS_insert_ins_before(INS, cur, ins_create_3(LISA_LD_W, reg_tmp, reg_env, env_offset_of_fscr0(current_cpu)));
         INS_insert_ins_before(INS, cur, ins_create_2(LISA_MOVGR2FCSR, reg_tmp, reg_fcsr));
     }
     /* 恢复 fpr */
@@ -999,7 +999,7 @@ VOID INS_InsertPredicatedCall (INS INS, IPOINT ipoint, AFUNPTR funptr,...)
             int fcc = INS->origin_ins->opnd[0].val;
             if (save_fpr_regs) {
                 int itemp = reg_alloc_itemp();
-                INS_insert_ins_before(INS, cur, ins_create_3(LISA_LD_B, itemp, reg_env, env_offset_of_fcc(current_cpu, fcc))); 
+                INS_insert_ins_before(INS, cur, ins_create_3(LISA_LD_B, itemp, reg_env, env_offset_of_fcc(current_cpu, fcc)));
                 INS_insert_ins_before(INS, cur, ins_create_2(LISA_MOVGR2CF, fcc, itemp));
                 reg_free_itemp(itemp);
             }
@@ -1049,7 +1049,7 @@ VOID INS_InsertPredicatedCall (INS INS, IPOINT ipoint, AFUNPTR funptr,...)
     }
 
     insert_callback(INS, cur, &cb);
-    
+
     /* 修正jmp跳过的指令数 */
     if (jmp != NULL ) {
         int offset = 0;
@@ -1099,7 +1099,7 @@ VOID INS_InsertThenCall (INS INS, IPOINT ipoint, AFUNPTR funptr,...)
 
     /* 3. Then Call */
     insert_callback(INS, cur, &then_cb);
-    
+
     /* 修正beqz跳过的指令数 */
     {
         int offset = 0;
@@ -1162,7 +1162,7 @@ VOID BBL_InsertThenCall (BBL BBL, IPOINT ipoint, AFUNPTR funptr,...)
 
     /* 3. Then Call */
     insert_callback(INS, cur, &then_cb);
-    
+
     /* 修正beqz跳过的指令数 */
     {
         int offset = 0;
@@ -1505,4 +1505,8 @@ VOID PIN_AddFollowChildProcessFunction(FOLLOW_CHILD_PROCESS_CALLBACK fun, VOID* 
 VOID RTN_AddInstrumentFunction(RTN_INSTRUMENT_CALLBACK fun, VOID* val)
 {
     PIN_state.rtn_cb = fun;
+}
+
+VOID PIN_GetSourceLocation(ADDRINT address, INT32* column, INT32* line, const char* fileName) {
+    addr2line(address, column, line, fileName);
 }

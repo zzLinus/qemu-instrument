@@ -7,6 +7,7 @@
 #include <sys/mman.h>
 
 #include "symbol.h"
+#include "addr2line.h"
 #include "../util/error.h"
 
 /* ELF format */
@@ -158,6 +159,8 @@ void parse_elf_symbol(const char* pathname, uint64_t map_base, void **pp_img)
         goto give_up;
     }
 
+    /* 4.3 read debug_line table */
+    prep_addr2line(fd);
 
     // alloc IMG
     *pp_img = image_alloc(pathname, map_base);
@@ -183,7 +186,7 @@ void parse_elf_symbol(const char* pathname, uint64_t map_base, void **pp_img)
                     continue;
                 }
 
-                if(map_base + syms[i].st_value < sec_end 
+                if(map_base + syms[i].st_value < sec_end
                         && map_base + syms[i].st_value >= sec_start) {
                     /**fprintf(stderr,"rtn name : %s    (%p) %d\n",  strs + syms[i].st_name,  map_base + syms[i].st_value, syms[i].st_size);*/
                     rtn_alloc(sec, strs + syms[i].st_name, map_base + syms[i].st_value, syms[i].st_size);

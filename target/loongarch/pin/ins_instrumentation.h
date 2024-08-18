@@ -7,6 +7,7 @@
 #include "context.h"
 #include "reg.h"
 #include "../instrument/elf/symbol.h"
+#include "../instrument/elf/addr2line.h"
 #include "qemu/typedefs.h" /* only for CPU_EXEC_ENTER(EXIT)_CALLBACK */
 
 
@@ -43,7 +44,7 @@ VOID PIN_InitSymbols(void);
 /* FIXME: change the return type(PIN_CALLBACK) to (void) because I do not know the class of PIN_CALLBACK */
 void INS_AddInstrumentFunction(INS_INSTRUMENT_CALLBACK fun, VOID* val);
 void TRACE_AddInstrumentFunction(TRACE_INSTRUMENT_CALLBACK fun, VOID *val);
-void PIN_AddFiniFunction(FINI_CALLBACK fun, VOID *val); 
+void PIN_AddFiniFunction(FINI_CALLBACK fun, VOID *val);
 void PIN_AddSyscallEntryFunction(SYSCALL_ENTRY_CALLBACK fun, VOID *val);
 void PIN_AddSyscallExitFunction(SYSCALL_EXIT_CALLBACK fun, VOID *val);
 void PIN_AddCpuExecEnterFunction(CPU_EXEC_ENTER_CALLBACK fun, VOID *val);
@@ -103,6 +104,9 @@ VOID PIN_GetLock(PIN_LOCK* lock, INT32 val);
 INT32 PIN_ReleaseLock(PIN_LOCK* lock);
 
 VOID PIN_AddFollowChildProcessFunction(FOLLOW_CHILD_PROCESS_CALLBACK fun, VOID* val);
+
+/* Pin Debug API */
+VOID PIN_GetSourceLocation(ADDRINT address, INT32* column, INT32* line, const char* fileName);
 
 #ifdef __cplusplus
 }
